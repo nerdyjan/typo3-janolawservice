@@ -88,6 +88,24 @@
                             </config>
                         </TCEforms>
                     </settings.janolawservice.pdflink>
+                    <settings.janolawservice.shopid>
+                        <TCEforms>
+                            <label>Bitte tragen Sie hier die Shop ID ein, falls diese von der zentral eingestellen Shop ID abweicht
+                            </label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.janolawservice.shopid>
+                    <settings.janolawservice.userid>
+                        <TCEforms>
+                            <label>Bitte tragen Sie hier die User ID ein, falls diese von der zentral eingestellen User ID abweicht
+                            </label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.janolawservice.userid>                    
                 </el>
             </ROOT>
         </sDEF>

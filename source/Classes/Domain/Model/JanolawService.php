@@ -26,10 +26,12 @@ namespace Janolaw\Janolawservice\Domain\Model;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
  * JanolawService
  */
-class JanolawService extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class JanolawService extends AbstractEntity
 {
 
     /**
@@ -195,7 +197,8 @@ class JanolawService extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the legacyLanguage
      *
-     * @param string $legacyLanguage
+     * @param $pdf
+     *
      * @return void
      */
     public function setPdf($pdf)
