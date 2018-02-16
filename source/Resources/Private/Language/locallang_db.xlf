@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-04-27T15:56:56Z" product-name="janolawservice">
+		<header/>
+		<body>
+			<trans-unit id="tx_janolawservice_domain_model_janolawservice">
+				<source>Janolaw Service</source>
+			</trans-unit>
+			<trans-unit id="tx_janolawservice_domain_model_janolawservice.type">
+				<source>Type</source>
+			</trans-unit>
+			<trans-unit id="tx_janolawservice_domain_model_janolawservice.shopid">
+				<source>Shop Id</source>
+			</trans-unit>
+			<trans-unit id="tx_janolawservice_domain_model_janolawservice.userid">
+				<source>User Id</source>
+			</trans-unit>
+			<trans-unit id="tx_janolawservice_domain_model_janolawservice.content">
+				<source>Content</source>
+			</trans-unit>
+			<trans-unit id="tx_janolawservice_domain_model_janolawservice.legacy_language">
+				<source>Legacy Language</source>
+			</trans-unit>
+			<trans-unit id="tx_janolawservice_domain_model_janolawservice.pdf">
+				<source>PDF</source>
+			</trans-unit>
+        </body>
+	</file>
+</xliff>

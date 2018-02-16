@@ -1,0 +1,95 @@
+<T3DataStructure>
+    <sheets>
+        <sDEF>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>Hosting Service Config</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.janolawservice.language>
+                        <TCEforms>
+                            <label>Sprache</label>
+                            <config>
+                                <type>select</type>
+                                <items type="array">
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">Deutsch</numIndex>
+                                        <numIndex index="1">de</numIndex>
+                                    </numIndex>
+                                    <numIndex index="1" type="array">
+                                        <numIndex index="0">Englisch (nur in Version 3)</numIndex>
+                                        <numIndex index="1">gb</numIndex>
+                                    </numIndex>
+                                    <numIndex index="2" type="array">
+                                        <numIndex index="0">Franzoesisch (nur in Version 3)</numIndex>
+                                        <numIndex index="1">fr</numIndex>
+                                    </numIndex>
+                                </items>
+                                <renderType>selectSingle</renderType>
+                            </config>
+                        </TCEforms>
+                    </settings.janolawservice.language>
+                    <settings.janolawservice.type>
+                        <TCEforms>
+                            <label>Contenttyp</label>
+                            <config>
+                                <type>select</type>
+                                <items type="array">
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">AGB</numIndex>
+                                        <numIndex index="1">terms</numIndex>
+                                    </numIndex>
+                                    <numIndex index="1" type="array">
+                                        <numIndex index="0">Impressum</numIndex>
+                                        <numIndex index="1">legaldetails</numIndex>
+                                    </numIndex>
+                                    <numIndex index="2" type="array">
+                                        <numIndex index="0">Widerrufsbelehrung</numIndex>
+                                        <numIndex index="1">revocation</numIndex>
+                                    </numIndex>
+                                    <numIndex index="3" type="array">
+                                        <numIndex index="0">Datenschutzerklärung</numIndex>
+                                        <numIndex index="1">datasecurity</numIndex>
+                                    </numIndex>
+                                    <numIndex index="4" type="array">
+                                        <numIndex index="0">Muster-Widerrufsformular (nur in Version 3)</numIndex>
+                                        <numIndex index="1">model-withdrawal-form</numIndex>
+                                    </numIndex>
+                                    </items>
+                                    <renderType>selectSingle</renderType>
+                                </config>
+                        </TCEforms>
+                    </settings.janolawservice.type>
+                    <settings.janolawservice.pdflink>
+                        <TCEforms>
+                            <label>PDF Link (nur in Version 3)</label>
+                            <config>
+                                <type>select</type>
+                                <items type="array">
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">kein PDF</numIndex>
+                                        <numIndex index="1">no_pdf</numIndex>
+                                    </numIndex>
+                                    <numIndex index="1" type="array">
+                                        <numIndex index="0">PDF oben</numIndex>
+                                        <numIndex index="1">pdf_top</numIndex>
+                                    </numIndex>
+                                    <numIndex index="2" type="array">
+                                        <numIndex index="0">PDF unten</numIndex>
+                                        <numIndex index="1">pdf_bottom</numIndex>
+                                    </numIndex>
+                                    <numIndex index="3" type="array">
+                                        <numIndex index="0">nur PDF Link</numIndex>
+                                        <numIndex index="1">only_pdf_link</numIndex>
+                                    </numIndex>
+                                </items>
+                                <renderType>selectSingle</renderType>
+                            </config>
+                        </TCEforms>
+                    </settings.janolawservice.pdflink>
+                </el>
+            </ROOT>
+        </sDEF>
+    </sheets>
+</T3DataStructure>

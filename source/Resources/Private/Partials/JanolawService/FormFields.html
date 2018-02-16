@@ -1,0 +1,20 @@
+
+<label for="language">
+	<f:translate key="tx_janolawservice_domain_model_janolawservice.language" /> <span class="required">(required)</span>
+</label><br />
+	<f:form.textfield property="language" /><br />
+<label for="type">
+	<f:translate key="tx_janolawservice_domain_model_janolawservice.type" /> <span class="required">(required)</span>
+</label><br />
+	<f:form.textfield property="type" /><br />
+<label for="shopid">
+	<f:translate key="tx_janolawservice_domain_model_janolawservice.shopid" /> <span class="required">(required)</span>
+</label><br />
+<label for="userid">
+	<f:translate key="tx_janolawservice_domain_model_janolawservice.userid" /> <span class="required">(required)</span>
+</label><br />
+    <f:form.textfield property="cacheDate"  value="{janolawService.cacheDate->f:format.date()}" /><br />
+<label for="content">
+	<f:translate key="tx_janolawservice_domain_model_janolawservice.content" />
+</label><br />
+	<f:form.textarea property="content" cols="40" rows="15" /><br />
