@@ -52,12 +52,12 @@ class JanolawConfigurationUtility
             $report = array();
             GeneralUtility::getURL(
                 $base_url . '/' . $userid . '/' . $shopid . '/',
-                1,
+                true,
                 false,
                 $report
             );
 
-            if ( $report["error"] == '404' )
+            if ( $report["error"] == '404' ||  $report["http_code"] == '404')
             {
                 return false;
             }
@@ -87,13 +87,13 @@ class JanolawConfigurationUtility
         $report = array();
         GeneralUtility::getURL(
             $base_url . '/' . $userid . '/' . $shopid . '/',
-            1,
+            true,
             false,
             $report
         );
 
         $version = 1;
-        if ( $report["error"] == '404' )
+        if ( ($report["error"] == '404' ||  $report["http_code"] == '404'))
         {
             $debugMessage .= "janolaw server <u>NICHT</u> verfügbar.<br/>";
         }
@@ -103,33 +103,33 @@ class JanolawConfigurationUtility
             # check for version 1
             GeneralUtility::getURL(
                 $base_url . '/' . $userid . '/' . $shopid . '/legaldetails_include.html',
-                1,
+                true,
                 false,
                 $report
             );
-            if ( $report["error"] != '404' )
+            if ( !($report["error"] == '404' ||  $report["http_code"] == '404'))
             {
                 $version = 1;
             }
             # check for version 2
             GeneralUtility::getURL(
                 $base_url . '/' . $userid . '/' . $shopid . '/de/legaldetails_include.html',
-                1,
+                true,
                 false,
                 $report
             );
-            if ( $report["error"] != '404' )
+            if ( !($report["error"] == '404' ||  $report["http_code"] == '404'))
             {
                 $version = 2;
             }
             # check for version 3
             GeneralUtility::getURL(
                 $base_url . '/' . $userid . '/' . $shopid . '/de/legaldetails.pdf',
-                1,
+                true,
                 false,
                 $report
             );
-            if ( $report["error"] != '404' )
+            if ( !($report["error"] == '404' ||  $report["http_code"] == '404'))
             {
                 $version = 3;
             }
@@ -138,11 +138,12 @@ class JanolawConfigurationUtility
             # check for version 3 with Multilanguage
             GeneralUtility::getURL(
                 $base_url . '/' . $userid . '/' . $shopid . '/gb/legaldetails_include.html',
-                1,
+                true,
                 false,
                 $report
             );
-            if ( $report["error"] != '404' )
+
+            if ( !($report["error"] == '404' ||  $report["http_code"] == '404'))
             {
                 $debugMessage .= "janolaw server verfügbar in Mehrsprachig<br/>";
                 $version = "3m";
@@ -251,13 +252,13 @@ class JanolawConfigurationUtility
         }
         $debugMessage .= "Version: " . $version . " Link: " . $docUrl . "  ";
 
-        $content = GeneralUtility::getURL( $docUrl, 0 );
+        $content = GeneralUtility::getURL( $docUrl, false );
         if ( ( $version === 3 ) || ( $version === "3m" ) )
         {
             //PDF File download, needed in every call, may be used in caching is managed before
             $pdfContent = GeneralUtility::getURL( $pdfUrl );
             $pdfName = $language . "_" . $type . ".pdf";
-            $pdfPath = 'typo3temp/janolaw/';
+            $pdfPath = 'typo3temp/janolaw/'.$shopid."/";
             if ( !is_dir( $pdfPath ) )
             {
                 GeneralUtility::mkdir_deep( PATH_site, $pdfPath );
@@ -270,22 +271,22 @@ class JanolawConfigurationUtility
             if ( $pdfsuccess )
             {
                 $pdfUrl = $pdfPath . $pdfName;
-            }
 
-            $pdflink = "<p><a class='janolaw-pdflink' href='" . $pdfUrl . "' target='_blank'>Download as PDF</a></p>";
-            if ( $pdf === "pdf_top" )
-            {
-                //show pdf link at top
-                $content = $pdflink . $content;
-            }
-            elseif ( $pdf === "pdf_bottom" )
-            {
-                //show pdf link at bottom
-                $content = $content . $pdflink;
-            }
-            elseif ( $pdf === "only_pdf_link" )
-            {
-                $content = $pdflink;
+                $pdflink = "<p><a class='janolaw-pdflink' href='" . $pdfUrl . "' target='_blank'>Download as PDF</a></p>";
+                if ( $pdf === "pdf_top" )
+                {
+                    //show pdf link at top
+                    $content = $pdflink . $content;
+                }
+                elseif ( $pdf === "pdf_bottom" )
+                {
+                    //show pdf link at bottom
+                    $content = $content . $pdflink;
+                }
+                elseif ( $pdf === "only_pdf_link" )
+                {
+                    $content = $pdflink;
+                }
             }
         }
 

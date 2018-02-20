@@ -7,8 +7,9 @@ zur Verfügung stehen. Dies ist der Fall, wenn die Texte im Jahr 2016
 erstellt worden sind. Sollten Sie Zweifel haben, dann prüfen Sie nach
 dem Login in Ihrem persönlichen Bereich `My
 janolaw <https://www.janolaw.de/login.html>`__ in der Übersicht das
-Datum der letzten Erstellung. Mit einer einmaligen Neubeantwortung des
-gesamten Fragenkatalogs erhalten Sie automatisch die aktuellste Version.
+Datum der letzten Erstellung bzw. ob Sie den Menüpunkt "Stammdaten ändern"
+haben. Mit einer einmaligen Neubeantwortung des gesamten Fragenkatalogs
+erhalten Sie automatisch die aktuellste Version.
 
 **Hinweis**
 
@@ -54,34 +55,13 @@ rufen Sie die spezifische Seite aus und wählen in den Inhaltselementen
 
 |image3|
 
-Wählen Sie dann im Pull Down Menü „\ *Ausgewähltes Plug-In*\ “ das
-Plugin „\ *Show janolaw Service*\ “ aus.
+Nach dem Öffnen der Content Seite wählen Sie unter dem Schiebereiter „\ *Allgemein*\ “ den Menüpunkt „\ *Ausgewähltes Plug-In*\ “ aus und rufen dort das janolaw Plugin auf.
+Hier können Sie nun die bzw. das spezifische Dokument von janolaw der jeweiligen Webseite zuordnen bzw. falls vorhanden auch die jeweilige Sprachversion des Dokuments zuordnen. 
 
-Als Contenttyp wählen Sie das gewünschte Dokument aus und bestätigen
-Ihre Auswahl mit dem Button „\ *speichern*\ “
+In der janolaw Version 3 (vgl. S. 1 Versionshinweis der Einbindungsanleitung) ist es möglich über die Auswahl „\ *PDF Link*\ “ im Frontend der Webseiten die PDF-Version des jeweiligen Dokuments in Form eines Downloadlink unterhalb oder oberhalb der Rechtstexte bzw. nur den Link anzeigen zu lassen.
 
-**WICHTIG**
+Bestätigen Sie bitte die Eingabe mit dem „\ *Speichern Button*\ “!
 
-Bitte beachten Sie, dass das Feld „\ **Muster-Widerrufsformular**\ “ nur
-verfügbar ist, wenn die janolaw Version 3 verwendet wird.
-
-|image4|
-
-Nach dem Öffnen der Content Seite wählen Sie unter dem Schiebereiter
-„\ *Allgemein“* den Menüpunkt *„Ausgewähltes Plug-In“ aus und rufen dort
-das janolaw Plugin auf.*
-
-Hier können Sie nun die bzw. das spezifische Dokument von janolaw der
-jeweiligen Webseite zuordnen bzw. falls vorhanden auch die jeweilige
-Sprachversion des Dokuments zuordnen.
-
-In der janolaw Version 3 (vgl. S. 1 Versionshinweis der
-Einbindungsanleitung) ist es möglich über die Auswahl „\ *PDF Link*\ “
-im Frontend der Webseiten die PDF-Version des jeweiligen Dokuments in
-Form eines Downloadlink unterhalb oder oberhalb der Rechtstexte bzw. nur
-den Link anzeigen zu lassen.
-
-Bestätigen Sie bitte die Eingabe mit dem „\ *Speichern Button“*!
 
 |image5|
 
@@ -143,11 +123,7 @@ Muster-Widerrufsformular <http://www.janolaw.de/docs/muster-widerrufsformular.do
 
 **Online Streitschlichtungsvorlage (OS-Plattform)**
 
-Nach der europäischen ODR-Verordnung (Verordnung über die
-außergerichtliche Online-Beilegung verbraucherrechtlicher
-Streitigkeiten) haben Unternehmer, die an Verbraucher verkaufen ab dem
-9. Januar 2016 auf ihren Webshops einen Link zur Online
-Streitbeilegungsplattform (OS-Plattform) aufzunehmen.
+Nach der europäischen ODR-Verordnung (Verordnung über die außergerichtliche Online-Beilegung verbraucherrechtlicher Streitigkeiten) müssen Unternehmer, die an Verbraucher verkaufen seit dem 9. Januar 2016 auf ihren Webshops einen aktiven Link auf die OS-Plattform (`https://ec.europa.eu/consumers/odr/ <https://ec.europa.eu/consumers/odr/>`__) setzen und ihre E-Mail Adresse angeben.
 
 **WICHTIG:**
 
