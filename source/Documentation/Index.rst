@@ -81,6 +81,8 @@ TypoScript Beispiel
     | settings.janolawservice.language=de
     | settings.janolawservice.type=terms
     | settings.janolawservice.pdflink=only\_pdf\_link
+    | settings.janolawservice.userid=123
+    | settings.janolawservice.shopid=123
     | }
 
 Mögliche Werte für settings.janolowservice:
@@ -93,6 +95,16 @@ Mögliche Werte für settings.janolowservice:
 -  pdflink: no\_pdf\|pdf\_top\|pdf\_bottom\|only\_pdf\_link (no\_pdf ist
    default)
 
+-  userid: enthält die UserID falls dies abweicht von der Zentralen Einstellung
+
+-  shopid: enthält die UserID falls dies abweicht von der Zentralen Einstellung
+
+**Multisite**
+
+Wenn Sie in einer TYPO3 Installation mehrere Seiten verwenden, die unterschiedliche Shop/UserIds bei janolaw haben, so können Sie diese über TypoScript im jeweiligen Seitentemplate aussteuern.
+Hierzu tragen Sie ein:
+plugin.tx_janolawservice_showjanolawservice.settings.janolawservice.shopid=123
+plugin.tx_janolawservice_showjanolawservice.settings.janolawservice.userid=123
 
 **Hinweis**
 
@@ -103,14 +115,9 @@ dort die Dokumente ggf. neu erstellen.
 
 **Wichtig**
 
-Bitte prüfen Sie ob die Rechtstexte auf den Webseiten erscheinen und
-überprüfen bei der Verwendung des AGB Hosting-Service für einen
-Internetshop unten stehende Punkte und im Rahmen eines Testkaufs die
-Einbindung der Dokumente in der E-Mail Auftragsbestätigung.
-
-Wenn die Einbindung korrekt erfolgt ist, werden die von Ihnen erstellten
-Dokumente über die Schnittstelle synchronisiert und automatisch auf den
-jeweiligen Seiten bzw. in der E-Mail Auftragsbestätigung aktualisiert.
+Bitte prüfen Sie ob die Rechtstexte nach Aktivierung des Plugins auf den Webseiten erscheinen.
+Bei Verwendung des AGB Hosting-Service für einen Internetshop prüfen Sie bitte im Rahmen eines Testkaufs ob Sie die Dokumente, AGB, Widerrufsbelehrung, Muster-Widerrufsformular und ab **Mai 2018** die Datenschutzerklärung in die **E-Mail Auftragsbestätigung** händisch korrekt eingebunden haben oder ob Sie die Dokumente spätestens mit dem Warenversand dem Kunden zuschicken.
+Wenn die Einbindung korrekt erfolgt ist, werden die Dokumente über die Schnittstelle synchronisiert und automatisch auf den jeweiligen Webseiten aktualisiert. Bitte beachten Sie, dass wenn Sie einen Internetshop haben Sie bei Änderungen der Rechtstexte die Dokumente in der E-Mail Auftragsbestätigung selbst austauschen müssen.
 
 **Muster-Widerrufsformular**
 
@@ -123,7 +130,7 @@ Muster-Widerrufsformular <http://www.janolaw.de/docs/muster-widerrufsformular.do
 
 **Online Streitschlichtungsvorlage (OS-Plattform)**
 
-Nach der europäischen ODR-Verordnung (Verordnung über die außergerichtliche Online-Beilegung verbraucherrechtlicher Streitigkeiten) müssen Unternehmer, die an Verbraucher verkaufen seit dem 9. Januar 2016 auf ihren Webshops einen aktiven Link auf die OS-Plattform (`https://ec.europa.eu/consumers/odr/ <https://ec.europa.eu/consumers/odr/>`__) setzen und ihre E-Mail Adresse angeben.
+Nach der europäischen ODR-Verordnung (Verordnung über die außergerichtliche Online-Beilegung verbraucherrechtlicher Streitigkeiten) müssen Unternehmer, die an Verbraucher verkaufen seit dem 9. Januar 2016 auf ihren Webshops einen **aktiven Link** auf die OS-Plattform (`https://ec.europa.eu/consumers/odr/ <https://ec.europa.eu/consumers/odr/>`__) setzen und **ihre E-Mail Adresse angeben**.
 
 **WICHTIG:**
 
