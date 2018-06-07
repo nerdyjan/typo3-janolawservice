@@ -118,6 +118,7 @@ class JanolawServiceController extends ActionController
         $shopid = 0
     )
     {
+        $debugMessage = "";
         $_extConfig = unserialize(
             $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['janolawservice']
         );
@@ -131,26 +132,34 @@ class JanolawServiceController extends ActionController
             $shopid = $_extConfig['shop_id'];
         }
 
-        $content = false;
-        $configUtil = new JanolawConfigurationUtility();
+        // eindeutigen identifier für unseren cache generieren
+        $cacheIdentifier = md5(
+            $language . "-" . $type . "-" . $userid . "-" . $shopid . "-" . $pdf
+        );
+        $content = $this->cacheInstance->get( $cacheIdentifier );
 
-        $validUserData = $configUtil->hasValidUserData( $userid, $shopid );
-        $validVersion = $configUtil->janolaw_get_version( $userid, $shopid, $debugMessage );
-
-        if ( !( $language === "de" ) && !( $validVersion === "3m" ) )
+        if ( $content === false )
         {
-            // only in Version 3m multilanguage is enabled
-            $validUserData = false;
-        }
-        if ( $validUserData && ( ( $validVersion == 1 ) || ( $validVersion == 2 ) || ( $validVersion == 3 ) || ( $validVersion == "3m" ) ) )
-        {
+            $configUtil = new JanolawConfigurationUtility();
 
-            // eindeutigen identifier für unseren cache generieren
-            $cacheIdentifier = md5(
-                $language . "-" . $type . "-" . $userid . "-" . $shopid . "-" . $pdf
+            $validUserData = $configUtil->hasValidUserData( $userid, $shopid );
+            $validVersion = $configUtil->janolaw_get_version( $userid, $shopid, $debugMessage );
+
+            if ( !( $language === "de" ) && !( $validVersion === "3m" ) )
+            {
+                // only in Version 3m multilanguage is enabled
+                $validUserData = false;
+            }
+
+            $janolawService = $this->getJanolawService(
+                $language,
+                $type,
+                $userid,
+                $shopid,
+                $pdf
             );
-            $content = $this->cacheInstance->get( $cacheIdentifier );
-            if ( $content === false )
+
+            if ( $validUserData && ( ( $validVersion == 1 ) || ( $validVersion == 2 ) || ( $validVersion == 3 ) || ( $validVersion == "3m" ) ) )
             {
                 // Cache nicht vorhanden
                 $debugMessage .= "Kein Cache vorhanden - generieren für identifier " . $cacheIdentifier . " und Lifetime in secs: " . $lifetime;
@@ -162,14 +171,6 @@ class JanolawServiceController extends ActionController
                     $shopid,
                     $pdf,
                     $debugMessage
-                );
-
-                $janolawService = $this->getJanolawService(
-                    $language,
-                    $type,
-                    $userid,
-                    $shopid,
-                    $pdf
                 );
 
                 if ( $content )
@@ -184,26 +185,26 @@ class JanolawServiceController extends ActionController
                     $janolawService->setContent( $content );
                     $this->janolawServiceRepository->update( $janolawService );
                 }
-                else
+            }
+            if (!$content)
+            {
+                //no valid Content from Janolaw, set Value from DB to cache
+                $content = $janolawService->getContent();
+                if ( $content )
                 {
-                    //no valid Content from Janolaw, set Value from DB to cache
-                    $content = $janolawService->getContent();
-                    if ( $content )
-                    {
-                        $debugMessage .= "No Valid Return from Janolaw, use latest Value from DB and set this to cache";
-                        $this->cacheInstance->set(
-                            $cacheIdentifier,
-                            $content,
-                            array( $language, $type, $userid, $shopid, $pdf ),
-                            $lifetime
-                        );
-                    }
+                    $debugMessage .= "No Valid Return from Janolaw, use latest Value from DB and set this to cache";
+                    $this->cacheInstance->set(
+                        $cacheIdentifier,
+                        $content,
+                        array( $language, $type, $userid, $shopid, $pdf ),
+                        $lifetime
+                    );
                 }
             }
-            else
-            {
-                $debugMessage .= "Get Content from Cache";
-            }
+        }
+        else
+        {
+            $debugMessage .= "Get Content from Cache";
         }
         return $content;
     }
