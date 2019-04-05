@@ -11,7 +11,7 @@ composer require  typo3-ter/janolawservice
 
 or 
 
-composer require janolaw/Typo3-janolawservice.
+composer require janolaw/janolawservice
 
 ## 2. Installation as extension from TYPO3 Extension Repository (TER)
 
