@@ -1,4 +1,4 @@
-# Typo3 janloaw Extension 
+# TYPO3 janloaw Extension
 For more information please visit https://www.janolaw.de/agb-service/einbindung-typo3.html
 
 # Installation
