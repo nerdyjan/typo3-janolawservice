@@ -1,5 +1,5 @@
 {
-  "name": "janolaw/janolawservice",
+  "name": "janolaw/typo3-janolawservice",
   "type": "typo3-cms-extension",
   "description": "Janolaw Service module is used for individual generation and automatic update of legal documents for online presence, blogs and online shops / online sale in Germany.",
   "homepage": "https://www.janolaw.de",
