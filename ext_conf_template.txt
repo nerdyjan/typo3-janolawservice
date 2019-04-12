@@ -10,6 +10,6 @@ shop_id = 0
 # cat=janolaw; type=int+; label=Stunden fuers Cachen
 lifetimeHours = 12
 
-# cat=janolaw; type=user[EXT:janolawservice/Classes/Utility/JanolawConfigurationUtility.php:Janolaw\Janolawservice\Utility\JanolawConfigurationUtility->checkUserData]; label=Informationen
+# cat=janolaw; type=user[Janolaw\Janolawservice\Utility\JanolawConfigurationUtility->checkUserData]; label=Informationen
 debugInformation = 0
 
