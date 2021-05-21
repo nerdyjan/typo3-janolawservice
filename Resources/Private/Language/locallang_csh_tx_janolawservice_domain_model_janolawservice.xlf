@@ -12,8 +12,8 @@
 			<trans-unit id="userid.description">
 				<source>userid</source>
 			</trans-unit>
-			<trans-unit id="content.description">
-				<source>content</source>
+			<trans-unit id="external.description">
+				<source>Janolaw content</source>
 			</trans-unit>
 			<trans-unit id="legacy_language.description">
 				<source>legacyLanguage</source>

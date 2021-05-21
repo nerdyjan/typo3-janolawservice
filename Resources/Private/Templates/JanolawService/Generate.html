@@ -1,4 +1,4 @@
-<f:layout name="Default" />
+<f:layout name="Default"/>
 
 This Template is responsible for displaying a single view for a domain object
 
@@ -13,6 +13,8 @@ Otherwise your changes will be overwritten the next time you save the extension 
 {namespace janolaw=Janolaw\Janolawservice\ViewHelpers}
 
 <f:section name="main">
-    <div class="debug"><f:format.raw value="{debug}"/></div>
-    <f:format.raw value="{content}"/>
+    <div class="debug">
+        <f:format.raw value="{debug}"/>
+    </div>
+    <f:format.raw value="{janolawContent}"/>
 </f:section>

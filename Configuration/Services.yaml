@@ -1,0 +1,19 @@
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Janolaw\Janolawservice\:
+        resource: '../Classes/*'
+
+    cache.janolawservices:
+        class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
+        factory: [ '@TYPO3\CMS\Core\Cache\CacheManager', 'getCache' ]
+        arguments: [ 'janolaw_janolawservices' ]
+
+    Janolaw\Janolawservice\Controller\JanolawServiceController:
+        public: true
+        arguments:
+            $cache: '@cache.janolawservices'

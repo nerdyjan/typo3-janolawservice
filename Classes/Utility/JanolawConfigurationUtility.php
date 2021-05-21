@@ -2,6 +2,10 @@
 
 namespace Janolaw\Janolawservice\Utility;
 
+use Psr\Http\Message\RequestFactoryInterface;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -14,13 +18,14 @@ class JanolawConfigurationUtility
      * The method returns an array or the HTML code depends on
      * $params['propertyName'] is set or not.
      *
-     *     * @return array|string array with errorType and HTML or only the HTML as string
+     *     * @return string result
      */
+
 
     public function checkUserData()
     {
-        $_extConfig = unserialize(
-            $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['janolawservice']
+        $_extConfig = GeneralUtility::makeInstance( ExtensionConfiguration::class )->get(
+            'janolawservice'
         );
 
         $userid = $_extConfig['user_id'];
@@ -44,20 +49,19 @@ class JanolawConfigurationUtility
         return $result;
     }
 
-    public function hasValidUserData( $userid, $shopid )
+    public function hasValidUserData( $userid, $shopid ): bool
     {
         if ( isset( $userid ) && isset( $shopid ) && ( $shopid != "" ) && ( $userid != "" ) )
         {
-            $base_url = 'http://www.janolaw.de/agb-service/shops/';
-            $report = array();
-            GeneralUtility::getURL(
-                $base_url . '/' . $userid . '/' . $shopid . '/',
-                true,
-                false,
-                $report
-            );
+            $base_url = 'https://www.janolaw.de/agb-service/shops/' . $userid . '/' . $shopid . '/';
 
-            if ( $report["error"] == '404' ||  $report["http_code"] == '404')
+            $requestFactory = GeneralUtility::makeInstance( RequestFactory::class );
+            $additionalOptions = [
+                'allow_redirects' => true,
+                'http_errors' => false,
+            ];
+            $response = $requestFactory->request( $base_url, 'GET', $additionalOptions );
+            if ( $response->getStatusCode() == '404' || $response->getStatusCode() == '404' )
             {
                 return false;
             }
@@ -82,72 +86,73 @@ class JanolawConfigurationUtility
      */
     public function janolaw_get_version( $userid, $shopid, &$debugMessage )
     {
-        $base_url = 'http://www.janolaw.de/agb-service/shops/';
+        $base_url = 'https://www.janolaw.de/agb-service/shops/';
 
-        $report = array();
-        GeneralUtility::getURL(
-            $base_url . '/' . $userid . '/' . $shopid . '/',
-            true,
-            false,
-            $report
-        );
+        $requestFactory = GeneralUtility::makeInstance( RequestFactory::class );
+        $additionalOptions = [
+            'allow_redirects' => true,
+            'http_errors' => false,
+        ];
+        $response = $requestFactory->request( $base_url, 'GET', $additionalOptions );
 
         $version = 1;
-        if ( ($report["error"] == '404' ||  $report["http_code"] == '404'))
+        if ( ( $response->getStatusCode() == '404' || $response->getStatusCode() == '404' ) )
         {
             $debugMessage .= "janolaw server <u>NICHT</u> verfügbar.<br/>";
         }
         else
         {
 
-            # check for version 1
-            GeneralUtility::getURL(
-                $base_url . '/' . $userid . '/' . $shopid . '/legaldetails_include.html',
-                true,
-                false,
-                $report
-            );
-            if ( !($report["error"] == '404' ||  $report["http_code"] == '404'))
-            {
-                $version = 1;
-            }
-            # check for version 2
-            GeneralUtility::getURL(
-                $base_url . '/' . $userid . '/' . $shopid . '/de/legaldetails_include.html',
-                true,
-                false,
-                $report
-            );
-            if ( !($report["error"] == '404' ||  $report["http_code"] == '404'))
-            {
-                $version = 2;
-            }
             # check for version 3
-            GeneralUtility::getURL(
+            $response = $requestFactory->request(
                 $base_url . '/' . $userid . '/' . $shopid . '/de/legaldetails.pdf',
-                true,
-                false,
-                $report
+                'GET',
+                $additionalOptions
             );
-            if ( !($report["error"] == '404' ||  $report["http_code"] == '404'))
+            if ( !( $response->getStatusCode() == '404' || $response->getStatusCode() == '404' ) )
             {
                 $version = 3;
+                # check for version 3 with Multilanguage
+                $response = $requestFactory->request(
+                    $base_url . '/' . $userid . '/' . $shopid . '/gb/legaldetails_include.html',
+                    'GET',
+                    $additionalOptions
+                );
+                if ( !( $response->getStatusCode() == '404'
+                        || $response->getStatusCode() == '404' ) )
+                {
+                    $debugMessage .= "janolaw server verfügbar in Mehrsprachig<br/>";
+                    $version = "3m";
+                }
             }
-
-            $debugMessage .= "janolaw server verfügbar in Version " . $version . "<br/>";
-            # check for version 3 with Multilanguage
-            GeneralUtility::getURL(
-                $base_url . '/' . $userid . '/' . $shopid . '/gb/legaldetails_include.html',
-                true,
-                false,
-                $report
-            );
-
-            if ( !($report["error"] == '404' ||  $report["http_code"] == '404'))
+            else
             {
-                $debugMessage .= "janolaw server verfügbar in Mehrsprachig<br/>";
-                $version = "3m";
+                # check for version 2
+                $response = $requestFactory->request(
+                    $base_url . '/' . $userid . '/' . $shopid . '/de/legaldetails_include.html',
+                    'GET',
+                    $additionalOptions
+                );
+                if ( !( $response->getStatusCode() == '404'
+                        || $response->getStatusCode() == '404' ) )
+                {
+                    $version = 2;
+                }
+                else
+                {
+                    $response = $requestFactory->request(
+                        $base_url . '/' . $userid . '/' . $shopid . '/legaldetails_include.html',
+                        'GET',
+                        $additionalOptions
+                    );
+                    if ( !( $response->getStatusCode() == '404'
+                            || $response->getStatusCode() == '404' ) )
+                    {
+                        $version = 1;
+                    }
+                }
             }
+            $debugMessage .= "janolaw server verfügbar in Version " . $version . "<br/>";
 
         }
         if ( $version <= 2 )
@@ -155,29 +160,6 @@ class JanolawConfigurationUtility
             $debugMessage .= "Sie nutzen eine alte Version des janolaw-Service, bitte prüfen Sie, ob Sie die Texte neu generiert haben und für die optionale mehrsprachige Version den Service bei janolaw gebucht haben. Kontaktieren Sie dazu janolaw unter <a href='mailto:support@janolaw.de'>support@janolaw.de</a> oder unter 06196 / 77 22 777.";
         }
 
-        return $version;
-    }
-
-    /**
-     * Checks the backend configuration and shows a message if necessary.
-     * The method returns an array or the HTML code depends on
-     * $params['propertyName'] is set or not.
-     *
-     * @return array|string array with errorType and HTML or only the HTML as string
-     */
-
-    public function checkVersion(  )
-    {
-        $_extConfig = unserialize(
-            $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['janolawservice']
-        );
-        $userid = $_extConfig['user_id'];
-        $shopid = $_extConfig['shop_id'];
-        $version = 0;
-        if ( isset( $userid ) && isset( $shopid ) && ( $shopid != "" ) && ( $userid != "" ) )
-        {
-            $version = $this->janolaw_get_version( $userid, $shopid, $debugMessage );
-        }
         return $version;
     }
 
@@ -198,11 +180,11 @@ class JanolawConfigurationUtility
         $type,
         $userid,
         $shopid,
-        $pdf = 'no_pdf',
-        &$debugMessage
+        &$debugMessage,
+        $pdf = 'no_pdf'
     )
     {
-        $base_url = 'http://www.janolaw.de/agb-service/shops/' . $userid . '/' . $shopid . '/';
+        $base_url = 'https://www.janolaw.de/agb-service/shops/' . $userid . '/' . $shopid . '/';
         $docUrl = '';
         $filename = '';
         $pdfUrl = '';
@@ -229,7 +211,6 @@ class JanolawConfigurationUtility
                         break;
                     case "model-withdrawal-form":
                         return false;
-                        break;
                 }
                 $docUrl = $base_url . $filename . "_include.html";
                 break;
@@ -251,36 +232,27 @@ class JanolawConfigurationUtility
                 break;
         }
         $debugMessage .= "Version: " . $version . " Link: " . $docUrl . "  ";
-
-        $content = GeneralUtility::getURL( $docUrl, false );
+        $content = GeneralUtility::getURL( $docUrl );
         if ( ( $version === 3 ) || ( $version === "3m" ) )
-        {
-            //PDF File download, needed in every call, may be used in caching is managed before
+        { //PDF File download, needed in every call, may be used in caching is managed before
             $pdfContent = GeneralUtility::getURL( $pdfUrl );
             $pdfName = $language . "_" . $type . ".pdf";
-            $pdfPath = 'typo3temp/janolaw/'.$shopid."/";
+            $pdfPath = 'typo3temp/janolaw/' . $shopid;
             if ( !is_dir( $pdfPath ) )
             {
-                GeneralUtility::mkdir_deep( PATH_site, $pdfPath );
+                GeneralUtility::mkdir_deep( Environment::getPublicPath() . "/" . $pdfPath );
             }
-            $pdfsuccess = GeneralUtility::writeFile(
-                $pdfPath . $pdfName,
-                $pdfContent,
-                true
-            );
+            $pdfsuccess = GeneralUtility::writeFile( $pdfPath . "/" . $pdfName, $pdfContent, true );
             if ( $pdfsuccess )
             {
-                $pdfUrl = $pdfPath . $pdfName;
-
+                $pdfUrl = "/" . $pdfPath . $pdfName;
                 $pdflink = "<p><a class='janolaw-pdflink' href='" . $pdfUrl . "' target='_blank'>Download as PDF</a></p>";
                 if ( $pdf === "pdf_top" )
-                {
-                    //show pdf link at top
+                { //show pdf link at top
                     $content = $pdflink . $content;
                 }
                 elseif ( $pdf === "pdf_bottom" )
-                {
-                    //show pdf link at bottom
+                { //show pdf link at bottom
                     $content = $content . $pdflink;
                 }
                 elseif ( $pdf === "only_pdf_link" )

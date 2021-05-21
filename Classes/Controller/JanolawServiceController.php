@@ -2,9 +2,15 @@
 
 namespace Janolaw\Janolawservice\Controller;
 
+use Janolaw\Janolawservice\Domain\Model\JanolawService;
 use Janolaw\Janolawservice\Domain\Repository\JanolawServiceRepository;
 use Janolaw\Janolawservice\Utility\JanolawConfigurationUtility;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Http\RequestFactory;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
 use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
@@ -39,20 +45,23 @@ use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
  */
 class JanolawServiceController extends ActionController
 {
-
     /**
      * janolawServiceRepository
      * ^^
      *
      * @var JanolawServiceRepository
      */
-    protected $janolawServiceRepository = null;
+    protected JanolawServiceRepository $janolawServiceRepository;
     /**
-     * cacheUtility
-     *
-     * @var \TYPO3\CMS\Core\Cache\CacheManager
+     * /**
+     * @var FrontendInterface
      */
-    protected $cacheInstance;
+    private FrontendInterface $cache;
+
+    public function __construct( FrontendInterface $cache )
+    {
+        $this->cache = $cache;
+    }
 
     /**
      * @param JanolawServiceRepository $janolawServiceRepository
@@ -64,17 +73,8 @@ class JanolawServiceController extends ActionController
         $this->janolawServiceRepository = $janolawServiceRepository;
     }
 
-    public function initializeAction()
-    {
-        $name = 'TYPO3\\CMS\\Core\\Cache\\CacheManager';
-        $manager = GeneralUtility::makeInstance( $name );
-        $this->cacheInstance = $manager->getCache( 'janolaw_janolawservices' );
-    }
-
     /**
      * action generate
-     *
-     * @return void
      */
 
     public function generateAction()
@@ -85,9 +85,16 @@ class JanolawServiceController extends ActionController
         $userid = $this->settings['janolawservice']['userid'];
         $shopid = $this->settings['janolawservice']['shopid'];
 
+        $janolawContent = "";
         try
         {
-            $content = $this->getJanoloawContent( $type, $language, $pdflink, $userid, $shopid );
+            $janolawContent = $this->getJanolawContent(
+                $type,
+                $language,
+                $pdflink,
+                $userid,
+                $shopid
+            );
         }
         catch ( IllegalObjectTypeException $e )
         {
@@ -96,7 +103,7 @@ class JanolawServiceController extends ActionController
         {
         }
 
-        $this->view->assign( 'content', $content );
+        $this->view->assign( 'janolawContent', $janolawContent );
     }
 
     /**
@@ -107,10 +114,10 @@ class JanolawServiceController extends ActionController
      * @param int $shopid
      *
      * @return bool|mixed|string
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws IllegalObjectTypeException
+     * @throws UnknownObjectException
      */
-    public function getJanoloawContent(
+    public function getJanolawContent(
         $type,
         $language,
         $pdf = "no_pdf",
@@ -119,8 +126,9 @@ class JanolawServiceController extends ActionController
     )
     {
         $debugMessage = "";
-        $_extConfig = unserialize(
-            $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['janolawservice']
+
+        $_extConfig = GeneralUtility::makeInstance( ExtensionConfiguration::class )->get(
+            'janolawservice'
         );
         $lifetime = $_extConfig['lifetimeHours'] * 3600;
         if ( !isset( $userid ) || $userid <= 0 )
@@ -131,12 +139,11 @@ class JanolawServiceController extends ActionController
         {
             $shopid = $_extConfig['shop_id'];
         }
-
         // eindeutigen identifier für unseren cache generieren
         $cacheIdentifier = md5(
             $language . "-" . $type . "-" . $userid . "-" . $shopid . "-" . $pdf
         );
-        $content = $this->cacheInstance->get( $cacheIdentifier );
+        $content = $this->cache->get( $cacheIdentifier );
 
         if ( $content === false )
         {
@@ -151,6 +158,8 @@ class JanolawServiceController extends ActionController
                 $validUserData = false;
             }
 
+
+            /** @var JanolawService $janolawService */
             $janolawService = $this->getJanolawService(
                 $language,
                 $type,
@@ -169,31 +178,34 @@ class JanolawServiceController extends ActionController
                     $type,
                     $userid,
                     $shopid,
-                    $pdf,
-                    $debugMessage
+                    $debugMessage,
+                    $pdf
                 );
 
                 if ( $content )
                 {
-                    $this->cacheInstance->set(
+                    $this->cache->set(
                         $cacheIdentifier,
                         $content,
                         array( $language, $type, $userid, $shopid, $pdf ),
                         $lifetime
                     );
                     //set new Content to Janolaw Service DB Entries... fallback of Content from janolaw fails
-                    $janolawService->setContent( $content );
+                    $janolawService->setExternal( $content );
                     $this->janolawServiceRepository->update( $janolawService );
+                    $this->objectManager->get(
+                        'TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager'
+                    )->persistAll();
                 }
             }
-            if (!$content)
+            if ( !$content )
             {
                 //no valid Content from Janolaw, set Value from DB to cache
-                $content = $janolawService->getContent();
+                $content = $janolawService->getExternal();
                 if ( $content )
                 {
                     $debugMessage .= "No Valid Return from Janolaw, use latest Value from DB and set this to cache";
-                    $this->cacheInstance->set(
+                    $this->cache->set(
                         $cacheIdentifier,
                         $content,
                         array( $language, $type, $userid, $shopid, $pdf ),
@@ -202,14 +214,17 @@ class JanolawServiceController extends ActionController
                 }
             }
         }
-        else
-        {
-            $debugMessage .= "Get Content from Cache";
-        }
+
         return $content;
     }
 
-    private function getJanolawService( $language, $type, $userid, $shopid, $pdf = "no_pdf" )
+    private function getJanolawService(
+        $language,
+        $type,
+        $userid,
+        $shopid,
+        $pdf = "no_pdf"
+    ): object
     {
         $query = $this->janolawServiceRepository->findByJanolawServiceParams(
             $language,
@@ -229,28 +244,48 @@ class JanolawServiceController extends ActionController
         }
     }
 
-    private function createJanolawService( $language, $type, $userid, $shopid, $pdf )
+    private function createJanolawService( $language, $type, $userid, $shopid, $pdf ): object
     {
-        $janolawService = $this->objectManager->get(
-            'Janolaw\\Janolawservice\\Domain\\Model\\JanolawService'
-        );
-        $janolawService->setContent( '' );
-        $janolawService->setLegacyLanguage( $language );
-        $janolawService->setType( $type );
-        $janolawService->setUserId( $userid );
-        $janolawService->setShopId( $shopid );
-        $janolawService->setPdf( $pdf );
+        $janolawServiceModel = new JanolawService( $type, $shopid, $userid, $language, $pdf );
         try
         {
-            $this->janolawServiceRepository->add( $janolawService );
+            $this->janolawServiceRepository->add( $janolawServiceModel );
             $this->objectManager->get(
                 'TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager'
             )->persistAll();
+
+            $url = 'https://api.janolaw.de/pluginsettings';
+            $jsonData = array(
+                'userID' => $userid,
+                'shopID' => $shopid,
+                'plugin' => 'TYPO3',
+                'domain' => GeneralUtility::getIndpEnv( 'TYPO3_REQUEST_URL' ),
+                'pluginversion' => ExtensionManagementUtility::getExtensionVersion(
+                    'janolawservice'
+                ),
+                'cmsversion' => VersionNumberUtility::getCurrentTypo3Version(),
+                'settings' => '<b>Language:</b> ' . $language . '<br/><b>Type:</b> ' . $type . '<br/><b>PDF:</b> ' . $pdf,
+                'misc' => '',
+            );
+            $jsonDataEncoded = json_encode( $jsonData );
+            $additionalOptions = [
+                'body' => $jsonDataEncoded,
+                // OR form data:
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Content-Length' => strlen( $jsonDataEncoded ),
+                ]
+            ];
+
+            $requestFactory = GeneralUtility::makeInstance( RequestFactory::class );
+
+            $requestFactory->request( $url, 'POST', $additionalOptions );
+
         }
         catch ( IllegalObjectTypeException $e )
         {
         }
 
-        return $janolawService;
+        return $janolawServiceModel;
     }
 }

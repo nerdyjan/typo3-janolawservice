@@ -1,4 +1,5 @@
 <?php
+
 namespace Janolaw\Janolawservice\Domain\Model;
 
 /***************************************************************
@@ -38,7 +39,7 @@ class JanolawService extends AbstractEntity
      * type
      *
      * @var string
-     * @validate NotEmpty
+     * @TYPO3\CMS\Extbase\Annotation\Validate(validator="NotEmpty")
      */
     protected $type = 0;
 
@@ -46,7 +47,7 @@ class JanolawService extends AbstractEntity
      * shopid
      *
      * @var int
-     * @validate NotEmpty
+     * @TYPO3\CMS\Extbase\Annotation\Validate(validator="NotEmpty")
      */
     protected $shopid = null;
 
@@ -54,17 +55,17 @@ class JanolawService extends AbstractEntity
      * userid
      *
      * @var int
-     * @validate NotEmpty
+     * @TYPO3\CMS\Extbase\Annotation\Validate(validator="NotEmpty")
      */
     protected $userid = null;
 
     /**
-     * content
+     * external
      *
      * @var string
      */
-    protected $content = '';
-    
+    protected $external = '';
+
     /**
      * legacyLanguage
      *
@@ -80,24 +81,44 @@ class JanolawService extends AbstractEntity
     protected $pdf = '';
 
     /**
-     * Returns the content
+     * JanolawService constructor.
      *
-     * @return string $content
+     * @param int|string $type
+     * @param int|null $shopid
+     * @param int|null $userid
+     * @param string $legacyLanguage
+     * @param string $pdf
      */
-    public function getContent()
+    public function __construct(
+        $type,
+        ?int $shopid,
+        ?int $userid,
+        string $legacyLanguage,
+        string $pdf
+    )
     {
-        return $this->content;
+        $this->type = $type;
+        $this->shopid = $shopid;
+        $this->userid = $userid;
+        $this->legacyLanguage = $legacyLanguage;
+        $this->pdf = $pdf;
     }
-    
+
+
     /**
-     * Sets the content
-     *
-     * @param string $content
-     * @return void
+     * @return string
      */
-    public function setContent($content)
+    public function getExternal(): string
     {
-        $this->content = $content;
+        return $this->external;
+    }
+
+    /**
+     * @param string $external
+     */
+    public function setExternal( string $external ): void
+    {
+        $this->external = $external;
     }
 
     /**
@@ -109,35 +130,37 @@ class JanolawService extends AbstractEntity
     {
         return $this->type;
     }
-    
+
     /**
      * Sets the type
      *
      * @param string $type
+     *
      * @return void
      */
-    public function setType($type)
+    public function setType( string $type )
     {
         $this->type = $type;
     }
-    
+
     /**
      * Returns the userid
      *
      * @return int userid
      */
-    public function getUserId()
+    public function getUserId(): ?int
     {
         return $this->userid;
     }
-    
+
     /**
      * Sets the userid
      *
      * @param int $userid
+     *
      * @return void
      */
-    public function setUserId($userid)
+    public function setUserId( int $userid )
     {
         $this->userid = $userid;
     }
@@ -147,7 +170,7 @@ class JanolawService extends AbstractEntity
      *
      * @return int shopid
      */
-    public function getShopId()
+    public function getShopId(): ?int
     {
         return $this->shopid;
     }
@@ -156,9 +179,10 @@ class JanolawService extends AbstractEntity
      * Sets the shopid
      *
      * @param int shopid
+     *
      * @return void
      */
-    public function setShopId($shopid)
+    public function setShopId( $shopid )
     {
         $this->shopid = $shopid;
     }
@@ -168,7 +192,7 @@ class JanolawService extends AbstractEntity
      *
      * @return string $legacyLanguage
      */
-    public function getLegacyLanguage()
+    public function getLegacyLanguage(): string
     {
         return $this->legacyLanguage;
     }
@@ -177,19 +201,20 @@ class JanolawService extends AbstractEntity
      * Sets the legacyLanguage
      *
      * @param string $legacyLanguage
+     *
      * @return void
      */
-    public function setLegacyLanguage($legacyLanguage)
+    public function setLegacyLanguage( string $legacyLanguage )
     {
         $this->legacyLanguage = $legacyLanguage;
     }
 
-/**
- * Returns the pdf
- *
- * @return string $pdf
- */
-    public function getPdf()
+    /**
+     * Returns the pdf
+     *
+     * @return string $pdf
+     */
+    public function getPdf(): string
     {
         return $this->pdf;
     }
@@ -197,11 +222,11 @@ class JanolawService extends AbstractEntity
     /**
      * Sets the legacyLanguage
      *
-     * @param $pdf
+     * @param string $pdf
      *
      * @return void
      */
-    public function setPdf($pdf)
+    public function setPdf( string $pdf )
     {
         $this->pdf = $pdf;
     }

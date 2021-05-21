@@ -11,24 +11,22 @@
  ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = array(
-	'title' => 'janolaw Service',
-	'description' => 'Integriert janolaw Service',
-	'category' => 'plugin',
-	'author' => 'janolaw AG',
-	'author_email' => 'hlinneweber@janolaw.de',
-	'state' => 'stable',
-	'internal' => '',
-	'uploadfolder' => '0',
-	'createDirs' => '',
-	'clearCacheOnLoad' => 0,
-	'version' => '1.2.1',
-	'constraints' => array(
-		'depends' => array(
-			'typo3' => '7.6.0-9.5.99',
-		),
-		'conflicts' => array(
-		),
-		'suggests' => array(
-		),
-	),
+    'title' => 'janolaw Service',
+    'description' => 'Integriert janolaw Service',
+    'category' => 'plugin',
+    'author' => 'janolaw AG',
+    'author_email' => 'hlinneweber@janolaw.de',
+    'state' => 'stable',
+    'internal' => '',
+    'uploadfolder' => '0',
+    'createDirs' => '',
+    'clearCacheOnLoad' => 0,
+    'version' => '2.0.0',
+    'constraints' => array(
+        'depends' => array(
+            'typo3' => '10.0.0-11.5.99',
+        ),
+        'conflicts' => array(),
+        'suggests' => array(),
+    ),
 );

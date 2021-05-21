@@ -15,8 +15,8 @@
 			<trans-unit id="tx_janolawservice_domain_model_janolawservice.userid">
 				<source>User Id</source>
 			</trans-unit>
-			<trans-unit id="tx_janolawservice_domain_model_janolawservice.content">
-				<source>Content</source>
+			<trans-unit id="tx_janolawservice_domain_model_janolawservice.external">
+				<source>janolaw Content</source>
 			</trans-unit>
 			<trans-unit id="tx_janolawservice_domain_model_janolawservice.legacy_language">
 				<source>Legacy Language</source>
