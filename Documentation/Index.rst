@@ -18,12 +18,17 @@ enthalten sind bzw. auch die AGB, Widerrufsbelehrung und das Muster-Widerrufsfor
 (`Internetshop <http://www.janolaw.de/internetrecht/internetshop/abmahnschutz-internetshop.html>`__)
 
 **Version Historie der TYPO3 Extension**
+
 2.0 Support von TYPO3 10 und TYPO3 11, für Updates bitte die Datenbankstruktur aktualisieren!
+
 1.2. Support von TYPO3 7, TYPO3 und TYPO3 9
+
 1.0 Support von TYPO3 7 und TYPO3 8, Multisitefunktion
+
 0.1 Support von TYPO3 7
 
 **1. Installation**
+
 Installieren Sie die Extension entweder über das Admintool Erweiterungen oder falls Sie composer nutzen mit
 composer require typo3-ter/janolawservice oder mit
 composer require janolaw/janolawservice
@@ -32,7 +37,8 @@ composer require janolaw/janolawservice
 dann führen Sie nach dem Update bitte eine Aktualisierung der Datenbankstruktur durch (unter 
 Verwaltungswerkzeuge -> Wartung -> Analyse Database Structure).
 
-**2. Konfiguration **
+**2. Konfiguration**
+
 Nach der Installation der janolaw Extension können Sie die zentralen Einstellungen vornehmen in den 
 Verwaltungswerkzeugen unter Einstellungen -> Extension Configuration. Hier können Sie die zentralen 
 Einstelllungen für die User ID und Shop ID vornehmen und die Cache Laufzeit anpassen.
@@ -151,49 +157,44 @@ allgemeinen Öffentlichkeit.
 |image6|
 
 **WICHTIG**
+
 Bitte prüfen Sie im Rahmen eines Testkaufs auch ob Sie die Dokumente in der E-Mail 
 Auftragsbestätigung korrekt eingebunden haben bzw. ob die oben aufgeführten Dokumente per 
 Schnittstelle automatisch eingebunden wurden.
 
--  Wenn die Funktionalität nur teilweise gegeben ist, dann müssen Sie die restlichen Texte 
-händisch in der E-Mail Auftragsbestätigung hinterlegen und diese bei Änderungen manuell aktualisieren.
--  Der Versand kann dann als E-Mail Anhang erfolgen indem Sie die Rechtstexte jeweils als PDF
-Dokument umwandeln.
--  Alternativ können Sie den Rechtstext auch in die E-Mail Auftragsbestätigung unterhalb der 
-Kaufbestätigung / Signatur herein kopieren. Bitte achten Sie bei dieser Variante darauf, dass Sie 
-nicht die von der Schnittstelle automatisch eingespielten Rechtstexte überschreiben, da bei der 
-nächsten Synchronisation die von Ihnen händisch ergänzten Texte überschrieben werden.
+-  Wenn die Funktionalität nur teilweise gegeben ist, dann müssen Sie die restlichen Texte händisch in der E-Mail Auftragsbestätigung hinterlegen und diese bei Änderungen manuell aktualisieren.
 
-Ihre Rechtstexte im Word Format finden Sie nach dem Login in Ihrem persönlichen Bereich 
-`My janolaw <https://www.janolaw.de/login.html>`__ über den Klick auf Übersicht aufrufen. 
+-  Der Versand kann dann als E-Mail Anhang erfolgen indem Sie die Rechtstexte jeweils als PDF Dokument umwandeln.
+
+-  Alternativ können Sie den Rechtstext auch in die E-Mail Auftragsbestätigung unterhalb der  Kaufbestätigung / Signatur herein kopieren. Bitte achten Sie bei dieser Variante darauf, dass Sie 
+nicht die von der Schnittstelle automatisch eingespielten Rechtstexte überschreiben, da bei der nächsten Synchronisation die von Ihnen händisch ergänzten Texte überschrieben werden.
+
+Ihre Rechtstexte im Word Format finden Sie nach dem Login in Ihrem persönlichen Bereich `My janolaw <https://www.janolaw.de/login.html>`__ über den Klick auf Übersicht aufrufen. 
 
 **HINWEIS**
 Eine reine Verlinkung auf die Rechtstexte in der E-Mail Auftragsbestätigung ist nicht ausreichend!
 
 
 **Textuelle Änderungen**
-Bitte nehmen Sie eventuelle Änderungen an den janolaw Dokumenten ausschließlich auf www.janolaw.de 
-vor. Dazu müssen Sie sich in den Bereich `My janolaw <https://www.janolaw.de/login.html>`__ einloggen 
+
+Bitte nehmen Sie eventuelle Änderungen an den janolaw Dokumenten ausschließlich auf www.janolaw.de vor. Dazu müssen Sie sich in den Bereich `My janolaw <https://www.janolaw.de/login.html>`__ einloggen 
 und dort die Dokumente ggf. neu erstellen.
 
 
 **Muster-Widerrufsformular**
-Das Muster-Widerrufsformular muss per E-Mail oder spätestens mit dem Warenversand zugeschickt werden.
-Zusätzlich muss das Widerrufsformular als weiterer Menüpunkt / Link in Ihren Internetshop neben den
-schon bestehenden Links für AGB, Impressum, Datenschutzerklärung, Widerrufsbelehrung und dem aktiven 
+
+Das Muster-Widerrufsformular muss per E-Mail oder spätestens mit dem Warenversand zugeschickt werden. Zusätzlich muss das Widerrufsformular als weiterer Menüpunkt / Link in Ihren Internetshop neben den schon bestehenden Links für AGB, Impressum, Datenschutzerklärung, Widerrufsbelehrung und dem aktiven 
 Link zur Online Streitbeilegungsplattform (OS-Plattform) angelegt werden.
 
 
 **Online Streitschlichtungsvorlage (OS-Plattform)**
-Nach der europäischen ODR-Verordnung (Verordnung über die außergerichtliche Online-Beilegung 
-verbraucherrechtlicher Streitigkeiten) müssen Unternehmer, die an Verbraucher verkaufen seit dem 
-9. Januar 2016 auf ihren Webshops einen **aktiven Link** auf die OS-Plattform 
-(`https://ec.europa.eu/consumers/odr/ <https://ec.europa.eu/consumers/odr/>`__ ) setzen **und ihre E-Mail Adresse** angeben.
 
+Nach der europäischen ODR-Verordnung (Verordnung über die außergerichtliche Online-Beilegung verbraucherrechtlicher Streitigkeiten) müssen Unternehmer, die an Verbraucher verkaufen seit dem 
+9. Januar 2016 auf ihren Webshops einen **aktiven Link** auf die OS-Plattform (`https://ec.europa.eu/consumers/odr/ <https://ec.europa.eu/consumers/odr/>`__ ) setzen **und ihre E-Mail Adresse** angeben.
 
 **WICHTIG:**
-Sie sollten den Link zur Plattform weder unter das Impressum noch in die AGB einfügen, da er dort 
-als "versteckt" gelten könnte. 
+
+Sie sollten den Link zur Plattform weder unter das Impressum noch in die AGB einfügen, da er dort als "versteckt" gelten könnte. 
 
 Hier unser Textvorschlag:
 
@@ -207,31 +208,32 @@ Unsere E-Mail für Verbraucherbeschwerden lautet: ......@......
 
 
 **Probleme bei der Einbindung**
+
 Bitte prüfen Sie, ob Sie folgende Fehlerquellen ausschließen können:
 
--  Bitte achten Sie darauf, welchen Service Sie erworben haben, ob darin nur das Impressum und die 
-Datenschutzerklärung (Webseiten) enthalten sind bzw. alle Dokumente d.h. auch AGB, 
-Widerrufsbelehrung und Muster-Widerrufsformular (Online-Shops).
--  User-ID / Kundennummer bzw. SHOP-ID / Rechtstexte-ID korrekt eingetragen (ohne Leerzeichen) und 
-nicht vertauscht?
+-  Bitte achten Sie darauf, welchen Service Sie erworben haben, ob darin nur das Impressum und die Datenschutzerklärung (Webseiten) enthalten sind bzw. alle Dokumente d.h. auch AGB, Widerrufsbelehrung und Muster-Widerrufsformular (Online-Shops).
+
+-  User-ID / Kundennummer bzw. SHOP-ID / Rechtstexte-ID korrekt eingetragen (ohne Leerzeichen) und nicht vertauscht?
+
 -  PHP muss Zugriff auf andere URLs nehmen können, um dort Dateien runterladen zu können.
+
 -  In der php.ini des Servers muss allow_url_fopen aktiviert sein.
 
 .. |image1| image:: /Images/image2.png
-   :width: 5.77351in
-   :height: 5.66981in
+   :width: 13.528in
+   :height: 8.639in
 .. |image2| image:: /Images/image3.png
-   :width: 4.13365in
-   :height: 3.00943in
+   :width: 6.431in
+   :height: 4.681in
 .. |image3| image:: /Images/image4.png
-   :width: 6.30000in
-   :height: 1.84150in
+   :width: 9.903in
+   :height: 2.889in
 .. |image4| image:: /Images/image5.png
-   :width: 3.85833in
-   :height: 4.28333in
+   :width: 3.855in
+   :height: 4.281in
 .. |image5| image:: /Images/image6.png
-   :width: 3.66042in
-   :height: 5.00000in
+   :width: 9.249in
+   :height: 8.791in
 .. |image6| image:: /Images/image7.png
    :width: 5.81300in
    :height: 2.06200in
