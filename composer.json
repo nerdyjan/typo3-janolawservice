@@ -1,22 +1,159 @@
 {
-  "name": "janolaw/janolawservice",
-  "type": "typo3-cms-extension",
-  "description": "Janolaw Service module is used for individual generation and automatic update of legal documents for online presence, blogs and online shops / online sale in Germany.",
-  "homepage": "https://www.janolaw.de",
-  "license": [
-    "GPL-2.0+"
-  ],
-  "keywords": [
-    "TYPO3 CMS",
-    "janolaw"
-  ],
-  "require": {
-    "typo3/cms-core": "^10.0.0 || ^11.0.0",
-    "ext-json": "*"
-  },
-  "autoload": {
-    "psr-4": {
-      "Janolaw\\Janolawservice\\": "Classes"
-    }
-  }
+	"name": "janolaw/janolawservice",
+	"description": "Janolaw Service module is used for individual generation and automatic update of legal documents for online presence, blogs and online shops / online sale in Germany.",
+	"license": [
+		"GPL-2.0+"
+	],
+	"type": "typo3-cms-extension",
+	"keywords": [
+		"TYPO3 CMS",
+		"janolaw"
+	],
+	"homepage": "https://www.janolaw.de",
+	"support": {
+		"issues": "https://github.com/Conspir3D/typo3-janolawservice/issues",
+		"source": "https://github.com/Conspir3D/typo3-janolawservice"
+	},
+	"require": {
+		"php": "~7.4.0 || ~8.0",
+		"ext-json": "*",
+		"typo3/cms-core": "^10.0.0 || ^11.0.0"
+	},
+	"require-dev": {
+		"ergebnis/composer-normalize": "^2.15.0",
+		"friendsofphp/php-cs-fixer": "^3.2",
+		"helmich/typo3-typoscript-lint": "^2.5.2",
+		"phpunit/phpunit": "^9.5",
+		"seld/jsonlint": "^1.8.3",
+		"squizlabs/php_codesniffer": "^3.6.1",
+		"symfony/yaml": "^4.4.29 || ^5.3.6 || ^6.0",
+		"typo3/cms-fluid-styled-content": "^9.5 || ^10.4 || ^11.5.2",
+		"typo3/coding-standards": "^0.5.0",
+		"typo3/testing-framework": "^6.10.0"
+	},
+	"replace": {
+		"typo3-ter/janolawservice": "self.version"
+	},
+	"prefer-stable": true,
+	"autoload": {
+		"psr-4": {
+			"Janolaw\\Janolawservice\\": "Classes"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Janolaw\\Janolawservice\\Tests\\": "Tests"
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"typo3/class-alias-loader": true,
+			"typo3/cms-composer-installers": true,
+			"ergebnis/composer-normalize": true,
+			"phpstan/extension-installer": true
+		},
+		"bin-dir": ".Build/bin",
+		"platform": {},
+		"preferred-install": {
+			"typo3/cms-core": "source"
+		},
+		"sort-packages": true,
+		"vendor-dir": ".Build/vendor"
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "2.x-dev"
+		},
+		"typo3/cms": {
+			"app-dir": ".Build",
+			"extension-key": "janolawservice",
+			"web-dir": ".Build/Web"
+		}
+	},
+	"scripts": {
+		"post-autoload-dump": [
+			"@prepare-extension-test-environment",
+			"@link-extension"
+		],
+		"ci": [
+			"@ci:static"
+		],
+		"ci:composer:normalize": "@composer normalize --dry-run",
+		"ci:coverage": [
+			"@putenv XDEBUG_MODE=coverage",
+			"@ci:coverage:unit"
+		],
+		"ci:coverage:unit": ".Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTests.xml --coverage-html=coverage/unit.html Tests/Unit",
+		"ci:dynamic": [
+			"@ci:tests"
+		],
+		"ci:json:lint": "find . ! -path '*.Build/*' ! -path '*Resources/Private/node_modules/*' -name '*.json' | xargs php .Build/vendor/seld/jsonlint/bin/jsonlint -q",
+		"ci:php": [
+			"@ci:php:copypaste",
+			"@ci:php:cs-fixer",
+			"@ci:php:lint",
+			"@ci:php:sniff",
+			"@ci:php:stan"
+		],
+		"ci:php:copypaste": "@php ./tools/phpcpd Classes Configuration Tests",
+		"ci:php:cs-fixer": "php-cs-fixer fix --config .php-cs-fixer.php -v --dry-run --using-cache no --diff",
+		"ci:php:lint": "find *.php Classes Configuration Tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l",
+		"ci:php:sniff": "phpcs Classes Configuration Tests",
+		"ci:static": [
+			"@ci:composer:normalize",
+			"@ci:json:lint",
+			"@ci:php:copypaste",
+			"@ci:php:cs-fixer",
+			"@ci:php:lint",
+			"@ci:php:sniff",
+			"@ci:php:stan",
+			"@ci:ts:lint",
+			"@ci:yaml:lint"
+		],
+		"ci:tests": [
+			"@ci:tests:unit",
+			"@ci:tests:functional"
+		],
+		"ci:tests:functional": "Build/Scripts/runTests.sh -s functional",
+		"ci:tests:unit": "Build/Scripts/runTests.sh -s unit",
+		"ci:ts:lint": "typoscript-lint -c Configuration/TsLint.yml --ansi -n --fail-on-warnings -vvv Configuration/TypoScript",
+		"ci:yaml:lint": "find . ! -path '*.Build/*' ! -path '*Resources/Private/node_modules/*' -name '*.yml' | xargs php .Build/bin/yaml-lint",
+		"docs:generate": [
+			"docker run --rm t3docs/render-documentation show-shell-commands > tempfile.sh; echo 'dockrun_t3rd makehtml' >> tempfile.sh; bash tempfile.sh; rm tempfile.sh"
+		],
+		"fix:php": [
+			"@fix:php:cs",
+			"@fix:php:sniff"
+		],
+		"fix:php:cs": "php-cs-fixer fix --config .php-cs-fixer.php",
+		"fix:php:sniff": "phpcbf Classes Configuration Tests",
+		"link-extension": [
+			"@php -r 'is_dir($extFolder=__DIR__.\"/.Build/public/typo3conf/ext/\") || mkdir($extFolder, 0777, true);'",
+			"@php -r 'file_exists($extFolder=__DIR__.\"/.Build/public/typo3conf/ext/tea\") || symlink(__DIR__,$extFolder);'"
+		]
+	},
+	"scripts-descriptions": {
+		"ci": "Runs all dynamic and static code checks.",
+		"ci:composer:normalize": "Checks the composer.json.",
+		"ci:coverage:functional": "Generates the code coverage report for functional tests.",
+		"ci:coverage:merge": "Merges the code coverage reports for unit and functional tests.",
+		"ci:coverage:unit": "Generates the code coverage report for unit tests.",
+		"ci:dynamic": "Runs all PHPUnit tests (unit and functional).",
+		"ci:json:lint": "Lints the JSON files.",
+		"ci:php": "Runs all static checks for the PHP files.",
+		"ci:php:copypaste": "Checks for copy'n'pasted PHP code.",
+		"ci:php:cs-fixer": "Checks the code style with the PHP Coding Standards Fixer (PHP-CS-Fixer).",
+		"ci:php:lint": "Lints the PHP files for syntax errors.",
+		"ci:php:sniff": "Checks the code style with PHP_CodeSniffer (PHPCS).",
+		"ci:static": "Runs all static code checks (syntax, style, types).",
+		"ci:tests": "Runs all PHPUnit tests (unit and functional).",
+		"ci:tests:functional": "Runs the functional tests.",
+		"ci:tests:unit": "Runs the unit tests.",
+		"ci:ts:lint": "Lints the TypoScript files.",
+		"ci:yaml:lint": "Lints the YAML files.",
+		"docs:generate": "Renders the extension ReST documentation.",
+		"fix:php": "Runs all fixers for the PHP code.",
+		"fix:php:cs": "Fixes the code style with PHP-CS-Fixer.",
+		"fix:php:sniff": "Fixes the code style with PHP_CodeSniffer."
+	}
 }

@@ -2,31 +2,6 @@
 
 namespace Janolaw\Janolawservice\Domain\Model;
 
-/***************************************************************
- *
- *  Copyright notice
- *
- *  (c) 2016
- *
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
@@ -34,14 +9,13 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class JanolawService extends AbstractEntity
 {
-
     /**
      * type
      *
      * @var string
      * @TYPO3\CMS\Extbase\Annotation\Validate(validator="NotEmpty")
      */
-    protected $type = 0;
+    protected $type = '';
 
     /**
      * shopid
@@ -49,7 +23,7 @@ class JanolawService extends AbstractEntity
      * @var int
      * @TYPO3\CMS\Extbase\Annotation\Validate(validator="NotEmpty")
      */
-    protected $shopid = null;
+    protected $shopid;
 
     /**
      * userid
@@ -57,7 +31,7 @@ class JanolawService extends AbstractEntity
      * @var int
      * @TYPO3\CMS\Extbase\Annotation\Validate(validator="NotEmpty")
      */
-    protected $userid = null;
+    protected $userid;
 
     /**
      * external
@@ -95,15 +69,13 @@ class JanolawService extends AbstractEntity
         ?int $userid,
         string $legacyLanguage,
         string $pdf
-    )
-    {
+    ) {
         $this->type = $type;
         $this->shopid = $shopid;
         $this->userid = $userid;
         $this->legacyLanguage = $legacyLanguage;
         $this->pdf = $pdf;
     }
-
 
     /**
      * @return string
@@ -116,7 +88,7 @@ class JanolawService extends AbstractEntity
     /**
      * @param string $external
      */
-    public function setExternal( string $external ): void
+    public function setExternal(string $external): void
     {
         $this->external = $external;
     }
@@ -135,10 +107,8 @@ class JanolawService extends AbstractEntity
      * Sets the type
      *
      * @param string $type
-     *
-     * @return void
      */
-    public function setType( string $type )
+    public function setType(string $type)
     {
         $this->type = $type;
     }
@@ -157,10 +127,8 @@ class JanolawService extends AbstractEntity
      * Sets the userid
      *
      * @param int $userid
-     *
-     * @return void
      */
-    public function setUserId( int $userid )
+    public function setUserId(int $userid)
     {
         $this->userid = $userid;
     }
@@ -178,11 +146,9 @@ class JanolawService extends AbstractEntity
     /**
      * Sets the shopid
      *
-     * @param int shopid
-     *
-     * @return void
+     * @param int $shopid
      */
-    public function setShopId( $shopid )
+    public function setShopId($shopid)
     {
         $this->shopid = $shopid;
     }
@@ -201,10 +167,8 @@ class JanolawService extends AbstractEntity
      * Sets the legacyLanguage
      *
      * @param string $legacyLanguage
-     *
-     * @return void
      */
-    public function setLegacyLanguage( string $legacyLanguage )
+    public function setLegacyLanguage(string $legacyLanguage)
     {
         $this->legacyLanguage = $legacyLanguage;
     }
@@ -223,12 +187,9 @@ class JanolawService extends AbstractEntity
      * Sets the legacyLanguage
      *
      * @param string $pdf
-     *
-     * @return void
      */
-    public function setPdf( string $pdf )
+    public function setPdf(string $pdf)
     {
         $this->pdf = $pdf;
     }
-
 }

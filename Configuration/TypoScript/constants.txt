@@ -1,15 +1,15 @@
 
 plugin.tx_janolawservice_showjanolawservice {
-	view {
-		# cat=plugin.tx_janolawservice_showjanolawservice/file; type=string; label=Path to template root (FE)
-		templateRootPath = EXT:janolawservice/Resources/Private/Templates/
-		# cat=plugin.tx_janolawservice_showjanolawservice/file; type=string; label=Path to template partials (FE)
-		partialRootPath = EXT:janolawservice/Resources/Private/Partials/
-		# cat=plugin.tx_janolawservice_showjanolawservice/file; type=string; label=Path to template layouts (FE)
-		layoutRootPath = EXT:janolawservice/Resources/Private/Layouts/
-	}
-	persistence {
-		# cat=plugin.tx_janolawservice_showjanolawservice//a; type=string; label=Default storage PID
-		storagePid =
-	}
+    view {
+        # cat=plugin.tx_janolawservice_showjanolawservice/file; type=string; label=Path to template root (FE)
+        templateRootPath = EXT:janolawservice/Resources/Private/Templates/
+        # cat=plugin.tx_janolawservice_showjanolawservice/file; type=string; label=Path to template partials (FE)
+        partialRootPath = EXT:janolawservice/Resources/Private/Partials/
+        # cat=plugin.tx_janolawservice_showjanolawservice/file; type=string; label=Path to template layouts (FE)
+        layoutRootPath = EXT:janolawservice/Resources/Private/Layouts/
+    }
+    persistence {
+        # cat=plugin.tx_janolawservice_showjanolawservice//a; type=string; label=Default storage PID
+        storagePid =
+    }
 }

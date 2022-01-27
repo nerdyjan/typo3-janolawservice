@@ -14,31 +14,7 @@ use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
 use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
-
-/***************************************************************
- *
- *  Copyright notice
- *
- *  (c) 2016
- *
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * JanolawServiceController
@@ -53,14 +29,18 @@ class JanolawServiceController extends ActionController
      */
     protected JanolawServiceRepository $janolawServiceRepository;
     /**
-     * /**
      * @var FrontendInterface
      */
     private FrontendInterface $cache;
 
-    public function __construct( FrontendInterface $cache )
+    /**
+     * @var PersistenceManager
+     */
+    private PersistenceManager $persistenceManager;
+    public function __construct(FrontendInterface $cache, PersistenceManager $persistenceManager)
     {
         $this->cache = $cache;
+        $this->persistenceManager = $persistenceManager;
     }
 
     /**
@@ -68,26 +48,24 @@ class JanolawServiceController extends ActionController
      */
     public function injectJanolawServiceRepository(
         JanolawServiceRepository $janolawServiceRepository
-    )
-    {
+    ) {
         $this->janolawServiceRepository = $janolawServiceRepository;
     }
 
     /**
      * action generate
      */
-
     public function generateAction()
     {
-        $language = $this->settings['janolawservice']['language'];
-        $type = $this->settings['janolawservice']['type'];
-        $pdflink = $this->settings['janolawservice']['pdflink'];
-        $userid = $this->settings['janolawservice']['userid'];
-        $shopid = $this->settings['janolawservice']['shopid'];
+        $error = false;
+        $janolawContent = '';
 
-        $janolawContent = "";
-        try
-        {
+        try {
+            $language = $this->settings['janolawservice']['language'];
+            $type = $this->settings['janolawservice']['type'];
+            $pdflink = $this->settings['janolawservice']['pdflink'];
+            $userid = $this->settings['janolawservice']['userid'];
+            $shopid = $this->settings['janolawservice']['shopid'];
             $janolawContent = $this->getJanolawContent(
                 $type,
                 $language,
@@ -95,69 +73,56 @@ class JanolawServiceController extends ActionController
                 $userid,
                 $shopid
             );
+        } catch (IllegalObjectTypeException $e) {
+            $error = true;
+        } catch (UnknownObjectException $e) {
+            $error = true;
         }
-        catch ( IllegalObjectTypeException $e )
-        {
+        if (!$error) {
+            $this->view->assign('janolawContent', $janolawContent);
         }
-        catch ( UnknownObjectException $e )
-        {
-        }
-
-        $this->view->assign( 'janolawContent', $janolawContent );
     }
 
-    /**
-     * @param $type
-     * @param $language
-     * @param string $pdf
-     * @param int $userid
-     * @param int $shopid
-     *
-     * @return bool|mixed|string
-     * @throws IllegalObjectTypeException
-     * @throws UnknownObjectException
-     */
     public function getJanolawContent(
         $type,
-        $language,
-        $pdf = "no_pdf",
+        $language = 'de',
+        $pdf = 'no_pdf',
         $userid = 0,
         $shopid = 0
-    )
-    {
-        $debugMessage = "";
+    ) {
+        $debugMessage = '';
+        $lifetime = 12 * 3600;
+        try {
+            $_extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(
+                'janolawservice'
+            );
+            $lifetime = $_extConfig['lifetimeHours'] * 3600;
+            if (!isset($userid) || $userid <= 0) {
+                $userid = $_extConfig['user_id'];
+            }
+            if (!isset($shopid) || $shopid <= 0) {
+                $shopid = $_extConfig['shop_id'];
+            }
+        } catch (\Exception $exception) {
+            //do nothing;
+            $debugMessage = '';
+        }
 
-        $_extConfig = GeneralUtility::makeInstance( ExtensionConfiguration::class )->get(
-            'janolawservice'
-        );
-        $lifetime = $_extConfig['lifetimeHours'] * 3600;
-        if ( !isset( $userid ) || $userid <= 0 )
-        {
-            $userid = $_extConfig['user_id'];
-        }
-        if ( !isset( $shopid ) || $shopid <= 0 )
-        {
-            $shopid = $_extConfig['shop_id'];
-        }
-        // eindeutigen identifier für unseren cache generieren
+        // create Cache Identifier
         $cacheIdentifier = md5(
-            $language . "-" . $type . "-" . $userid . "-" . $shopid . "-" . $pdf
+            $language . '-' . $type . '-' . $userid . '-' . $shopid . '-' . $pdf
         );
-        $content = $this->cache->get( $cacheIdentifier );
-
-        if ( $content === false )
-        {
+        $content = $this->cache->get($cacheIdentifier);
+        //if there is no valid cache content
+        if ($content === false || $content === null) {
             $configUtil = new JanolawConfigurationUtility();
+            $validUserData = $configUtil->hasValidUserData($userid, $shopid);
+            $validVersion = $configUtil->janolawGetVersion($userid, $shopid, $debugMessage);
 
-            $validUserData = $configUtil->hasValidUserData( $userid, $shopid );
-            $validVersion = $configUtil->janolaw_get_version( $userid, $shopid, $debugMessage );
-
-            if ( !( $language === "de" ) && !( $validVersion === "3m" ) )
-            {
-                // only in Version 3m multilanguage is enabled
+            if (!($language === 'de') && !($validVersion === '3m')) {
+                // only in Version '3m' other languages are allowed, this parameter combination is invalid
                 $validUserData = false;
             }
-
 
             /** @var JanolawService $janolawService */
             $janolawService = $this->getJanolawService(
@@ -168,11 +133,13 @@ class JanolawServiceController extends ActionController
                 $pdf
             );
 
-            if ( $validUserData && ( ( $validVersion == 1 ) || ( $validVersion == 2 ) || ( $validVersion == 3 ) || ( $validVersion == "3m" ) ) )
-            {
-                // Cache nicht vorhanden
-                $debugMessage .= "Kein Cache vorhanden - generieren für identifier " . $cacheIdentifier . " und Lifetime in secs: " . $lifetime;
-                $content = $configUtil->janolaw_get_content(
+            if (
+                $validUserData && (($validVersion == 1) || ($validVersion == 2) ||
+                                   ($validVersion == 3) || ($validVersion == '3m'))
+            ) {
+                $debugMessage .= 'No Cache exists - generate for Identifier  '
+                                 . $cacheIdentifier . ' and lifetime in seconds ' . $lifetime;
+                $content = $configUtil->janolawGetContent(
                     $validVersion,
                     $language,
                     $type,
@@ -181,40 +148,34 @@ class JanolawServiceController extends ActionController
                     $debugMessage,
                     $pdf
                 );
-
-                if ( $content )
-                {
+                if ($content) {
                     $this->cache->set(
                         $cacheIdentifier,
                         $content,
-                        array( $language, $type, $userid, $shopid, $pdf ),
+                        [ $language, $type, $userid, $shopid, $pdf ],
                         $lifetime
                     );
-                    //set new Content to Janolaw Service DB Entries... fallback of Content from janolaw fails
-                    $janolawService->setExternal( $content );
-                    $this->janolawServiceRepository->update( $janolawService );
-                    $this->objectManager->get(
-                        'TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager'
-                    )->persistAll();
+                    //set new content to database, fallback if connection to external janolaw server fails
+                    $janolawService->setExternal($content);
+                    $this->janolawServiceRepository->update($janolawService);
+                    $this->persistenceManager->persistAll();
                 }
             }
-            if ( !$content )
-            {
-                //no valid Content from Janolaw, set Value from DB to cache
+            if (!$content) {
+                //no content from external server, get value from database and set it to cache
                 $content = $janolawService->getExternal();
-                if ( $content )
-                {
-                    $debugMessage .= "No Valid Return from Janolaw, use latest Value from DB and set this to cache";
+                if ($content) {
+                    $debugMessage .= 'No valid return from external server, use latest value from
+                    database and set this to cache';
                     $this->cache->set(
                         $cacheIdentifier,
                         $content,
-                        array( $language, $type, $userid, $shopid, $pdf ),
+                        [ $language, $type, $userid, $shopid, $pdf ],
                         $lifetime
                     );
                 }
             }
         }
-
         return $content;
     }
 
@@ -223,9 +184,8 @@ class JanolawServiceController extends ActionController
         $type,
         $userid,
         $shopid,
-        $pdf = "no_pdf"
-    ): object
-    {
+        $pdf = 'no_pdf'
+    ): object {
         $query = $this->janolawServiceRepository->findByJanolawServiceParams(
             $language,
             $type,
@@ -233,57 +193,50 @@ class JanolawServiceController extends ActionController
             $shopid,
             $pdf
         );
-        if ( $query->count() >= 1 )
-        {
+        if ($query != null && $query->count() >= 1) {
             return $query->getFirst();
         }
-        else
-        {
-            //DB Entry did not exist - create
-            return $this->createJanolawService( $language, $type, $userid, $shopid, $pdf );
-        }
+
+        //DB Entry did not exist - create
+        return $this->createJanolawService($language, $type, $userid, $shopid, $pdf);
     }
 
-    private function createJanolawService( $language, $type, $userid, $shopid, $pdf ): object
+    private function createJanolawService($language, $type, $userid, $shopid, $pdf): object
     {
-        $janolawServiceModel = new JanolawService( $type, $shopid, $userid, $language, $pdf );
-        try
-        {
-            $this->janolawServiceRepository->add( $janolawServiceModel );
-            $this->objectManager->get(
-                'TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager'
-            )->persistAll();
-
+        $janolawServiceModel = new JanolawService($type, $shopid, $userid, $language, $pdf);
+        $error = false;
+        try {
+            $this->janolawServiceRepository->add($janolawServiceModel);
+            $this->persistenceManager->persistAll();
             $url = 'https://api.janolaw.de/pluginsettings';
-            $jsonData = array(
+            $jsonData = [
                 'userID' => $userid,
                 'shopID' => $shopid,
                 'plugin' => 'TYPO3',
-                'domain' => GeneralUtility::getIndpEnv( 'TYPO3_REQUEST_URL' ),
+                'domain' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'),
                 'pluginversion' => ExtensionManagementUtility::getExtensionVersion(
                     'janolawservice'
                 ),
                 'cmsversion' => VersionNumberUtility::getCurrentTypo3Version(),
-                'settings' => '<b>Language:</b> ' . $language . '<br/><b>Type:</b> ' . $type . '<br/><b>PDF:</b> ' . $pdf,
+                'settings' => '<b>Language:</b> ' . $language . '<br/><b>Type:</b> '
+                              . $type . '<br/><b>PDF:</b> ' . $pdf,
                 'misc' => '',
-            );
-            $jsonDataEncoded = json_encode( $jsonData );
+            ];
+            $jsonDataEncoded = json_encode($jsonData);
             $additionalOptions = [
                 'body' => $jsonDataEncoded,
                 // OR form data:
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'Content-Length' => strlen( $jsonDataEncoded ),
-                ]
+                    'Content-Length' => strlen($jsonDataEncoded),
+                ],
             ];
 
-            $requestFactory = GeneralUtility::makeInstance( RequestFactory::class );
+            $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
 
-            $requestFactory->request( $url, 'POST', $additionalOptions );
-
-        }
-        catch ( IllegalObjectTypeException $e )
-        {
+            $requestFactory->request($url, 'POST', $additionalOptions);
+        } catch (IllegalObjectTypeException $e) {
+            $error = true;
         }
 
         return $janolawServiceModel;

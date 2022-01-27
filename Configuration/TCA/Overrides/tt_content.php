@@ -3,7 +3,7 @@
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
-defined( 'TYPO3_MODE' ) or die();
+defined('TYPO3_MODE') || die();
 
 call_user_func(
     function () {

@@ -1,0 +1,11 @@
+.php-cs-fixer.cache
+Documentation-GENERATED-temp/
+tools/
+.Build/
+.idea/
+Build/testing-docker/.env
+composer.lock
+.editorconfig
+phive.phar.asc
+coverage/
+.phpstorm.meta.php
