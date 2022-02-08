@@ -171,7 +171,7 @@ class JanolawConfigurationUtility
         $pdfContent = GeneralUtility::getURL($pdfUrl);
         $pdfName = $language . '_' . $type . '.pdf';
         $pdfPath = '/typo3temp/janolaw/' . $shopid;
-        if (!is_dir($pdfPath)) {
+        if (!is_dir(Environment::getPublicPath() . $pdfPath)) {
             GeneralUtility::mkdir_deep(Environment::getPublicPath() . $pdfPath);
         }
         $errorMessage = GeneralUtility::writeFileToTypo3tempDir(Environment::getPublicPath()
