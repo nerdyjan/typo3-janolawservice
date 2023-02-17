@@ -5,6 +5,7 @@ namespace Janolaw\Janolawservice\Controller;
 use Janolaw\Janolawservice\Domain\Model\JanolawService;
 use Janolaw\Janolawservice\Domain\Repository\JanolawServiceRepository;
 use Janolaw\Janolawservice\Utility\JanolawConfigurationUtility;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -55,7 +56,7 @@ class JanolawServiceController extends ActionController
     /**
      * action generate
      */
-    public function generateAction()
+    public function generateAction(): ResponseInterface
     {
         $error = false;
         $janolawContent = '';
@@ -81,6 +82,7 @@ class JanolawServiceController extends ActionController
         if (!$error) {
             $this->view->assign('janolawContent', $janolawContent);
         }
+        return $this->htmlResponse();
     }
 
     public function getJanolawContent(
