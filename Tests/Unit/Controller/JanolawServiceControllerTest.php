@@ -20,7 +20,7 @@ class JanolawServiceControllerTest extends UnitTestCase
     private const USERID_MULTILANGUAGE = '100282211';
     private const SHOPID_MULTILANGUAGE = '815904';
 
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/janolawservice',
     ];
 
@@ -35,7 +35,7 @@ class JanolawServiceControllerTest extends UnitTestCase
 
         $this->janolawServiceRepository = $this->getAccessibleMock(
             JanolawServiceRepository::class,
-            ['dummy'],
+            null,
             [],
             '',
             false
@@ -61,8 +61,8 @@ class JanolawServiceControllerTest extends UnitTestCase
      */
     public function testInjectJanolawServiceRepository()
     {
-        $mockedRepository = $this->getAccessibleMock(JanolawServiceRepository::class, ['dummy'], [], '', false);
-        $subject = $this->getAccessibleMock(JanolawServiceController::class, ['dummy'], [], '', false);
+        $mockedRepository = $this->getAccessibleMock(JanolawServiceRepository::class, null, [], '', false);
+        $subject = $this->getAccessibleMock(JanolawServiceController::class, null, [], '', false);
         $subject->injectJanolawServiceRepository($mockedRepository);
 
         self::assertEquals($mockedRepository, $subject->_get('janolawServiceRepository'));

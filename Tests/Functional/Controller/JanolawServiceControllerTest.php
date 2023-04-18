@@ -7,6 +7,8 @@ use Janolaw\Janolawservice\Domain\Repository\JanolawServiceRepository;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Http\Client\GuzzleClientFactory;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -20,9 +22,8 @@ class JanolawServiceControllerTest extends FunctionalTestCase
     private const USERID_MULTILANGUAGE = '100282211';
     private const SHOPID_MULTILANGUAGE = '815904';
 
-    protected $testExtensionsToLoad = [
-        'typo3conf/ext/janolawservice',
-    ];
+
+    protected array $testExtensionsToLoad = ['typo3conf/ext/janolawservice'];
 
     protected JanolawServiceController $janolawServiceController;
     /**
@@ -38,6 +39,9 @@ class JanolawServiceControllerTest extends FunctionalTestCase
 
         $this->janolawServiceController->injectJanolawServiceRepository(
             GeneralUtility::makeInstance(JanolawServiceRepository::class)
+        );
+        $this->janolawServiceController->injectRequestFactory(
+            GeneralUtility::makeInstance(RequestFactory::class)
         );
     }
 

@@ -55,29 +55,6 @@ class JanolawService extends AbstractEntity
     protected $pdf = '';
 
     /**
-     * JanolawService constructor.
-     *
-     * @param int|string $type
-     * @param int|null $shopid
-     * @param int|null $userid
-     * @param string $legacyLanguage
-     * @param string $pdf
-     */
-    public function __construct(
-        $type,
-        ?int $shopid,
-        ?int $userid,
-        string $legacyLanguage,
-        string $pdf
-    ) {
-        $this->type = $type;
-        $this->shopid = $shopid;
-        $this->userid = $userid;
-        $this->legacyLanguage = $legacyLanguage;
-        $this->pdf = $pdf;
-    }
-
-    /**
      * @return string
      */
     public function getExternal(): string

@@ -2,10 +2,8 @@
 
 use Janolaw\Janolawservice\Controller\JanolawServiceController;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
+defined('TYPO3') or die();
 
-if (!defined('TYPO3_MODE')) {
-    die('Access denied.');
-}
 
 ExtensionUtility::configurePlugin(
     'Janolawservice',

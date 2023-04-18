@@ -2,6 +2,7 @@
 
 namespace Janolaw\Janolawservice\Controller;
 
+use Exception;
 use Janolaw\Janolawservice\Domain\Model\JanolawService;
 use Janolaw\Janolawservice\Domain\Repository\JanolawServiceRepository;
 use Janolaw\Janolawservice\Utility\JanolawConfigurationUtility;
@@ -49,8 +50,20 @@ class JanolawServiceController extends ActionController
      */
     public function injectJanolawServiceRepository(
         JanolawServiceRepository $janolawServiceRepository
-    ) {
+    ): void
+    {
         $this->janolawServiceRepository = $janolawServiceRepository;
+    }
+
+
+    /**
+     * @param RequestFactory RequestFactory
+     */
+    public function injectRequestFactory(
+        RequestFactory $requestFactory
+    ): void
+    {
+        $this->requestFactory = $requestFactory;
     }
 
     /**
@@ -58,33 +71,28 @@ class JanolawServiceController extends ActionController
      */
     public function generateAction(): ResponseInterface
     {
-        $error = false;
         $janolawContent = '';
 
-        try {
-            $language = $this->settings['janolawservice']['language'];
-            $type = $this->settings['janolawservice']['type'];
-            $pdflink = $this->settings['janolawservice']['pdflink'];
-            $userid = $this->settings['janolawservice']['userid'];
-            $shopid = $this->settings['janolawservice']['shopid'];
-            $janolawContent = $this->getJanolawContent(
-                $type,
-                $language,
-                $pdflink,
-                $userid,
-                $shopid
-            );
-        } catch (IllegalObjectTypeException $e) {
-            $error = true;
-        } catch (UnknownObjectException $e) {
-            $error = true;
-        }
-        if (!$error) {
-            $this->view->assign('janolawContent', $janolawContent);
-        }
+        $language = $this->settings['janolawservice']['language'];
+        $type = $this->settings['janolawservice']['type'];
+        $pdflink = $this->settings['janolawservice']['pdflink'];
+        $userid = $this->settings['janolawservice']['userid'];
+        $shopid = $this->settings['janolawservice']['shopid'];
+        $janolawContent = $this->getJanolawContent(
+            $type,
+            $language,
+            $pdflink,
+            $userid,
+            $shopid
+        );
+        $this->view->assign('janolawContent', $janolawContent);
         return $this->htmlResponse();
     }
 
+    /**
+     * @throws UnknownObjectException
+     * @throws IllegalObjectTypeException
+     */
     public function getJanolawContent(
         $type,
         $language = 'de',
@@ -105,7 +113,7 @@ class JanolawServiceController extends ActionController
             if (!isset($shopid) || $shopid <= 0) {
                 $shopid = $_extConfig['shop_id'];
             }
-        } catch (\Exception $exception) {
+        } catch ( Exception $ex ) {
             //do nothing;
             $debugMessage = '';
         }
@@ -118,6 +126,7 @@ class JanolawServiceController extends ActionController
         //if there is no valid cache content
         if ($content === false || $content === null) {
             $configUtil = new JanolawConfigurationUtility();
+            $configUtil->injectRequestFactory($this->requestFactory);
             $validUserData = $configUtil->hasValidUserData($userid, $shopid);
             $validVersion = $configUtil->janolawGetVersion($userid, $shopid, $debugMessage);
 
@@ -205,7 +214,12 @@ class JanolawServiceController extends ActionController
 
     private function createJanolawService($language, $type, $userid, $shopid, $pdf): object
     {
-        $janolawServiceModel = new JanolawService($type, $shopid, $userid, $language, $pdf);
+        $janolawServiceModel = new JanolawService();
+        $janolawServiceModel->setLegacyLanguage($language);
+        $janolawServiceModel->setType($type);
+        $janolawServiceModel->setUserId($userid);
+        $janolawServiceModel->setShopId($shopid);
+        $janolawServiceModel->setPdf($pdf);
         $error = false;
         try {
             $this->janolawServiceRepository->add($janolawServiceModel);
@@ -234,9 +248,7 @@ class JanolawServiceController extends ActionController
                 ],
             ];
 
-            $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
-
-            $requestFactory->request($url, 'POST', $additionalOptions);
+            $this->requestFactory->request($url, 'POST', $additionalOptions);
         } catch (IllegalObjectTypeException $e) {
             $error = true;
         }

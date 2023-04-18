@@ -14,12 +14,11 @@ class JanolawServiceRepository extends Repository
         $query = $this->createQuery();
         $query->matching(
             $query->logicalAnd(
-                [
                 $query->equals('legacy_language', $language),
                 $query->equals('userid', $userid),
                 $query->equals('shopid', $shopid),
                 $query->equals('type', $type),
-                $query->equals('pdf', $pdf), ]
+                $query->equals('pdf', $pdf)
             )
         );
 

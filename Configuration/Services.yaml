@@ -7,7 +7,7 @@ services:
 
   Janolaw\Janolawservice\:
     resource: '../Classes/*'
-
+    exclude: '../Classes/Domain/Model/*'
   cache.janolawservices:
     class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
     factory: [ '@TYPO3\CMS\Core\Cache\CacheManager', 'getCache' ]
@@ -17,3 +17,4 @@ services:
     public: true
     arguments:
       $cache: '@cache.janolawservices'
+

@@ -13,6 +13,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class JanolawConfigurationUtility
 {
     /**
+     * @param RequestFactory $requestFactory RequestFactory
+     */
+    public function injectRequestFactory(
+        RequestFactory $requestFactory
+    ): void
+    {
+        $this->requestFactory = $requestFactory;
+    }
+
+    /**
      * Checks the backend configuration and shows a message if necessary.
      * The method returns an array or the HTML code depends on
      * $params['propertyName'] is set or not.
@@ -47,12 +57,11 @@ class JanolawConfigurationUtility
         if (isset($userid) && isset($shopid) && ($shopid != '') && ($userid != '')) {
             $base_url = 'https://www.janolaw.de/agb-service/shops/' . $userid . '/' . $shopid . '/';
 
-            $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
             $additionalOptions = [
                 'allow_redirects' => true,
                 'http_errors' => false,
             ];
-            $response = $requestFactory->request($base_url, 'GET', $additionalOptions);
+            $response = $this->requestFactory->request($base_url, 'GET', $additionalOptions);
             if ($response->getStatusCode() == '404' || $response->getStatusCode() == '404') {
                 return false;
             }
@@ -65,19 +74,18 @@ class JanolawConfigurationUtility
     {
         $base_url = 'https://www.janolaw.de/agb-service/shops/';
 
-        $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
         $additionalOptions = [
             'allow_redirects' => true,
             'http_errors' => false,
         ];
-        $response = $requestFactory->request($base_url, 'GET', $additionalOptions);
+        $response = $this->requestFactory->request($base_url, 'GET', $additionalOptions);
 
         $version = 1;
         if (($response->getStatusCode() == '404' || $response->getStatusCode() == '404')) {
             $debugMessage .= 'janolaw server <u>NICHT</u> verfügbar.<br/>';
         } else {
             // check for version 3
-            $response = $requestFactory->request(
+            $response = $this->requestFactory->request(
                 $base_url . '/' . $userid . '/' . $shopid . '/de/legaldetails.pdf',
                 'GET',
                 $additionalOptions
@@ -85,7 +93,7 @@ class JanolawConfigurationUtility
             if (!($response->getStatusCode() == '404' || $response->getStatusCode() == '404')) {
                 $version = 3;
                 // check for version 3 with Multilanguage
-                $response = $requestFactory->request(
+                $response = $this->requestFactory->request(
                     $base_url . '/' . $userid . '/' . $shopid . '/gb/legaldetails_include.html',
                     'GET',
                     $additionalOptions
@@ -96,7 +104,7 @@ class JanolawConfigurationUtility
                 }
             } else {
                 // check for version 2
-                $response = $requestFactory->request(
+                $response = $this->requestFactory->request(
                     $base_url . '/' . $userid . '/' . $shopid . '/de/legaldetails_include.html',
                     'GET',
                     $additionalOptions
@@ -104,7 +112,7 @@ class JanolawConfigurationUtility
                 if (!($response->getStatusCode() == '404' || $response->getStatusCode() == '404')) {
                     $version = 2;
                 } else {
-                    $response = $requestFactory->request(
+                    $response = $this->requestFactory->request(
                         $base_url . '/' . $userid . '/' . $shopid . '/legaldetails_include.html',
                         'GET',
                         $additionalOptions
