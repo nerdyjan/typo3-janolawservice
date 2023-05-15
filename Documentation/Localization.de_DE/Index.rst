@@ -28,6 +28,8 @@ enthalten sind bzw. auch die AGB, Widerrufsbelehrung und das Muster-Widerrufsfor
 
 **Version Historie der TYPO3 Extension**
 
+3.0 Support von TYPO3 11 und TYPO3 12, nach einem Update bitte die Caches aktualisieren!
+
 2.0 Support von TYPO3 10 und TYPO3 11, für Updates bitte die Datenbankstruktur aktualisieren!
 
 1.2. Support von TYPO3 7, TYPO3 und TYPO3 9

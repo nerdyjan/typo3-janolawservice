@@ -30,6 +30,8 @@ documents including the GTCs, cancellation policy and the model cancellation for
 
 **Version History of the TYPO3 Extension**
 
+3.0 Support of TYPO3 11 and TYPO3 12, after updates please refresh the caches!
+
 2.0 Support of TYPO3 10 and TYPO3 11, for updates please update the database structure!
 
 1.2. Support of TYPO3 7, TYPO3 8 and TYPO3 9
