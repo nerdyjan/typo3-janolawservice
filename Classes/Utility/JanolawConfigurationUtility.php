@@ -38,6 +38,12 @@ class JanolawConfigurationUtility
         $userid = $_extConfig['user_id'];
         $shopid = $_extConfig['shop_id'];
 
+        if (!$this->requestFactory)
+        {
+            //injection does not seem to work in context of
+            //ext_conf_template.txt type=user
+            $this->requestFactory = new RequestFactory();
+        }
         if ($this->hasValidUserData($userid, $shopid)) {
             $result = 'Ihre Daten sind o.k., der Janolaw Server ist erreichbar.<br/>';
             $this->janolawGetVersion($userid, $shopid, $result);
