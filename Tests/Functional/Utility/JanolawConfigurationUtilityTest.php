@@ -15,14 +15,10 @@ namespace Janolaw\Janolawservice\Tests\Functional\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Janolaw\Janolawservice\Controller\JanolawServiceController;
-use Janolaw\Janolawservice\Domain\Repository\JanolawServiceRepository;
 use Janolaw\Janolawservice\Utility\JanolawConfigurationUtility;
-use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -39,10 +35,7 @@ class JanolawConfigurationUtilityTest extends FunctionalTestCase
      */
     public function hasValidUserDataForExtConfigVersion()
     {
-        $configUtil = new JanolawConfigurationUtility();
-        $configUtil->injectRequestFactory(
-            GeneralUtility::makeInstance(RequestFactory::class)
-        );
+        $configUtil = new JanolawConfigurationUtility(GeneralUtility::makeInstance(RequestFactory::class));
         $extConfig = new ExtensionConfiguration();
         $_extConfig = $extConfig->get(
             'janolawservice'

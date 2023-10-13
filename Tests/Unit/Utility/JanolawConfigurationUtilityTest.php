@@ -36,9 +36,8 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
 
         $guzzleClient = new GuzzleClientFactory();
         $requestFactory = new RequestFactory($guzzleClient);
-        $this->requestFactory =new RequestFactory($guzzleClient);
-        $this->configUtil = new JanolawConfigurationUtility();
-        $this->configUtil->injectRequestFactory($requestFactory);
+        $this->requestFactory = new RequestFactory($guzzleClient);
+        $this->configUtil = new JanolawConfigurationUtility($requestFactory);
     }
     /**
      * @test
@@ -85,7 +84,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
     {
         $docUrl = self::BASEURL . '/' . self::USERID_MULTILANGUAGE . '/' . self::SHOPID_MULTILANGUAGE
                   . '/' . self::LANG_DE . '/' . self::LEGAL_DETAILS . '_include.html';
-        $content = @file_get_contents($docUrl);
+        $content = file_get_contents($docUrl);
         self::assertNotFalse($content);
     }
 
@@ -96,7 +95,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
     {
         $pdfUrl = self::BASEURL . '/' . self::USERID_MULTILANGUAGE . '/' . self::SHOPID_MULTILANGUAGE
                   . '/' . self::LANG_DE . '/' . self::LEGAL_DETAILS . '.pdf';
-        $content = @file_get_contents($pdfUrl);
+        $content = file_get_contents($pdfUrl);
         self::assertNotFalse($content);
     }
 
@@ -121,7 +120,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
     {
         //verify error-cases returns one
         $version = $this->configUtil->janolawGetVersion('', '', $this->debugMessage);
-        self::assertEquals( 1, $version );
+        self::assertEquals(1, $version);
     }
 
     /**
@@ -131,7 +130,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
     {
         //verify error-cases returns one
         $version = $this->configUtil->janolawGetVersion(self::USERID_INVALID, self::SHOPID_DE, $this->debugMessage);
-        self::assertEquals( 1, $version );
+        self::assertEquals(1, $version);
     }
 
     /**
@@ -141,7 +140,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
     {
         //verify error-cases returns one
         $version = $this->configUtil->janolawGetVersion(self::USERID_DE, self::SHOPID_INVALID, $this->debugMessage);
-        self::assertEquals( 1, $version );
+        self::assertEquals(1, $version);
     }
 
     /**
@@ -149,11 +148,19 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
      */
     public function janolawGetVersionGetVersionWithInvalidUserIdAndShopIdCombination(): void
     {
-        $version = $this->configUtil->janolawGetVersion(self::USERID_MULTILANGUAGE, self::SHOPID_DE, $this->debugMessage);
-        self::assertEquals( 1, $version );
+        $version = $this->configUtil->janolawGetVersion(
+            self::USERID_MULTILANGUAGE,
+            self::SHOPID_DE,
+            $this->debugMessage
+        );
+        self::assertEquals(1, $version);
 
-        $version = $this->configUtil->janolawGetVersion(self::USERID_DE, self::SHOPID_MULTILANGUAGE, $this->debugMessage);
-        self::assertEquals( 1, $version );
+        $version = $this->configUtil->janolawGetVersion(
+            self::USERID_DE,
+            self::SHOPID_MULTILANGUAGE,
+            $this->debugMessage
+        );
+        self::assertEquals(1, $version);
     }
 
     /**
@@ -163,7 +170,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
     {
         //verify error-cases returns one
         $version = $this->configUtil->janolawGetVersion(self::USERID_DE, self::SHOPID_DE, $this->debugMessage);
-        self::assertEquals( 3, $version );
+        self::assertEquals(3, $version);
     }
 
     /**
@@ -177,7 +184,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
             self::SHOPID_MULTILANGUAGE,
             $this->debugMessage
         );
-        self::assertEquals( '3m', $version );
+        self::assertEquals('3m', $version);
     }
 
     /**
@@ -187,7 +194,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
     {
         //verify error-cases returns one
         $version = $this->configUtil->janolawGetVersion(self::USERID_DE_V2, self::SHOPID_DE_V2, $this->debugMessage);
-        self::assertEquals( 2, $version );
+        self::assertEquals(2, $version);
     }
     /**
      * not working at the moment because of getURL calling requestfactory with makeInstance
@@ -312,6 +319,4 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
         );
         self::assertIsString($content);
     }
-
-
 }

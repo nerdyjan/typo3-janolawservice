@@ -6,7 +6,6 @@ return [
         'label' => 'type',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'dividers2tabs' => true,
         'versioningWS' => true,
 
@@ -50,7 +49,8 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['', 0],
+                    'label' => '',
+                    'value' => 0,
                 ],
                 'foreign_table' => 'tx_janolawservice_domain_model_janolawservice',
                 'foreign_table_where' => 'AND tx_janolawservice_domain_model_janolawservice.pid=###CURRENT_PID### AND tx_janolawservice_domain_model_janolawservice.sys_language_uid IN (-1,0)',
@@ -82,7 +82,7 @@ return [
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
             'config' => [
-                'renderType' => 'inputDateTime',
+                'renderType' => 'datetime',
                 'type' => 'input',
                 'size' => 13,
                 'eval' => 'datetime',
@@ -100,7 +100,7 @@ return [
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
             'config' => [
-                'renderType' => 'inputDateTime',
+                'renderType' => 'datetime',
                 'type' => 'input',
                 'size' => 13,
                 'eval' => 'datetime',
@@ -121,7 +121,8 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 30,
-                'eval' => 'trim,required',
+                'required' => true,
+                'eval' => 'trim',
             ],
         ],
         'userid' => [
@@ -130,7 +131,8 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 4,
-                'eval' => 'int,required',
+                'required' => true,
+                'eval' => 'number',
             ],
         ],
         'shopid' => [
@@ -139,7 +141,8 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 4,
-                'eval' => 'int,required',
+                'required' => true,
+                'eval' => 'number',
             ],
         ],
         'external' => [

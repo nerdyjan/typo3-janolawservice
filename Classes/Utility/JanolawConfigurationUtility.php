@@ -2,6 +2,8 @@
 
 namespace Janolaw\Janolawservice\Utility;
 
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -12,13 +14,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class JanolawConfigurationUtility
 {
-    /**
-     * @param RequestFactory $requestFactory RequestFactory
-     */
-    public function injectRequestFactory(
+    private RequestFactory $requestFactory;
+
+    public function __construct(
         RequestFactory $requestFactory
-    ): void
-    {
+    ) {
         $this->requestFactory = $requestFactory;
     }
 
@@ -27,9 +27,12 @@ class JanolawConfigurationUtility
      * The method returns an array or the HTML code depends on
      * $params['propertyName'] is set or not.
      *
-     *     * @return string result
+     *     *
+     * @return string result
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
      */
-    public function checkUserData()
+    public function checkUserData(): string
     {
         $_extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(
             'janolawservice'
@@ -38,12 +41,6 @@ class JanolawConfigurationUtility
         $userid = $_extConfig['user_id'];
         $shopid = $_extConfig['shop_id'];
 
-        if (!$this->requestFactory)
-        {
-            //injection does not seem to work in context of
-            //ext_conf_template.txt type=user
-            $this->requestFactory = new RequestFactory();
-        }
         if ($this->hasValidUserData($userid, $shopid)) {
             $result = 'Ihre Daten sind o.k., der Janolaw Server ist erreichbar.<br/>';
             $this->janolawGetVersion($userid, $shopid, $result);
@@ -144,8 +141,6 @@ class JanolawConfigurationUtility
     public function janolawGetContent($version, $language, $type, $userid, $shopid, &$debugMessage, $pdf = 'no_pdf')
     {
         $base_url = 'https://www.janolaw.de/agb-service/shops/' . $userid . '/' . $shopid . '/';
-        $docUrl = '';
-        $pdfUrl = '';
         $content = false;
         switch ($version) {
             case 1:
@@ -207,7 +202,7 @@ class JanolawConfigurationUtility
         }
     }
 
-    private function getVersion1Filename($type)
+    private function getVersion1Filename($type): string
     {
         $filename = '';
         switch ($type) {

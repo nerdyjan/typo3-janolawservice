@@ -8,7 +8,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 class JanolawServiceTest extends UnitTestCase
 {
     /** @var JanolawService */
-    protected $subject;
+    protected JanolawService $subject;
 
     public function setup(): void
     {

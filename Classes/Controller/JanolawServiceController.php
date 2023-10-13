@@ -39,31 +39,24 @@ class JanolawServiceController extends ActionController
      * @var PersistenceManager
      */
     private PersistenceManager $persistenceManager;
-    public function __construct(FrontendInterface $cache, PersistenceManager $persistenceManager)
-    {
+    private JanolawConfigurationUtility $configUtily;
+    private RequestFactory $requestFactory;
+    private ExtensionConfiguration $extensionConfiguration;
+
+    public function __construct(
+        FrontendInterface $cache,
+        PersistenceManager $persistenceManager,
+        JanolawConfigurationUtility $configUtily,
+        RequestFactory $requestFactory,
+        JanolawServiceRepository $janolawServiceRepository,
+        ExtensionConfiguration $extensionConfiguration
+    ) {
+        $this->configUtily = $configUtily;
         $this->cache = $cache;
         $this->persistenceManager = $persistenceManager;
-    }
-
-    /**
-     * @param JanolawServiceRepository $janolawServiceRepository
-     */
-    public function injectJanolawServiceRepository(
-        JanolawServiceRepository $janolawServiceRepository
-    ): void
-    {
-        $this->janolawServiceRepository = $janolawServiceRepository;
-    }
-
-
-    /**
-     * @param RequestFactory RequestFactory
-     */
-    public function injectRequestFactory(
-        RequestFactory $requestFactory
-    ): void
-    {
         $this->requestFactory = $requestFactory;
+        $this->janolawServiceRepository = $janolawServiceRepository;
+        $this->extensionConfiguration = $extensionConfiguration;
     }
 
     /**
@@ -71,8 +64,6 @@ class JanolawServiceController extends ActionController
      */
     public function generateAction(): ResponseInterface
     {
-        $janolawContent = '';
-
         $language = $this->settings['janolawservice']['language'];
         $type = $this->settings['janolawservice']['type'];
         $pdflink = $this->settings['janolawservice']['pdflink'];
@@ -103,7 +94,7 @@ class JanolawServiceController extends ActionController
         $debugMessage = '';
         $lifetime = 12 * 3600;
         try {
-            $_extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(
+            $_extConfig = $this->extensionConfiguration->get(
                 'janolawservice'
             );
             $lifetime = $_extConfig['lifetimeHours'] * 3600;
@@ -113,7 +104,7 @@ class JanolawServiceController extends ActionController
             if (!isset($shopid) || $shopid <= 0) {
                 $shopid = $_extConfig['shop_id'];
             }
-        } catch ( Exception $ex ) {
+        } catch (Exception $ex) {
             //do nothing;
             $debugMessage = '';
         }
@@ -123,13 +114,11 @@ class JanolawServiceController extends ActionController
             $language . '-' . $type . '-' . $userid . '-' . $shopid . '-' . $pdf
         );
         $content = $this->cache->get($cacheIdentifier);
+
         //if there is no valid cache content
         if ($content === false || $content === null) {
-            $configUtil = new JanolawConfigurationUtility();
-            $configUtil->injectRequestFactory($this->requestFactory);
-            $validUserData = $configUtil->hasValidUserData($userid, $shopid);
-            $validVersion = $configUtil->janolawGetVersion($userid, $shopid, $debugMessage);
-
+            $validUserData = $this->configUtily->hasValidUserData($userid, $shopid);
+            $validVersion = $this->configUtily->janolawGetVersion($userid, $shopid, $debugMessage);
             if (!($language === 'de') && !($validVersion === '3m')) {
                 // only in Version '3m' other languages are allowed, this parameter combination is invalid
                 $validUserData = false;
@@ -150,7 +139,7 @@ class JanolawServiceController extends ActionController
             ) {
                 $debugMessage .= 'No Cache exists - generate for Identifier  '
                                  . $cacheIdentifier . ' and lifetime in seconds ' . $lifetime;
-                $content = $configUtil->janolawGetContent(
+                $content = $this->configUtily->janolawGetContent(
                     $validVersion,
                     $language,
                     $type,
@@ -220,7 +209,6 @@ class JanolawServiceController extends ActionController
         $janolawServiceModel->setUserId($userid);
         $janolawServiceModel->setShopId($shopid);
         $janolawServiceModel->setPdf($pdf);
-        $error = false;
         try {
             $this->janolawServiceRepository->add($janolawServiceModel);
             $this->persistenceManager->persistAll();
