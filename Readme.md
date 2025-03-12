@@ -20,7 +20,7 @@ Download and install the extension with the extension manager module.
 
 ## 3. Update from Version 3.x to 4.x
 
-If you update from an older Version (0.x oder 1.x) to Version 4 the upgrade wizard ‘Migrates janolawserive Plugin’ must be executed, the database structure may be updated and the caches must be deleted!
+If you update from an older Version (3.x) to Version 4 the upgrade wizard ‘Migrates janolawserive Plugin’ must be executed, the database structure may be updated and the caches must be deleted!
 
 ## 3. Update from Version 1.x to 2.x
 
