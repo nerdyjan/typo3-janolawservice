@@ -1,14 +1,17 @@
 <?php
 
-use Janolaw\Janolawservice\Controller\JanolawServiceController;
-use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
+declare(strict_types=1);
 defined('TYPO3') or die();
 
+use Janolaw\Janolawservice\Controller\JanolawServiceController;
+use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 ExtensionUtility::configurePlugin(
     'Janolawservice',
     'Showjanolawservice',
-    [JanolawServiceController::class => 'generate']
+    [JanolawServiceController::class => 'generate'],
+    [],
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
 );
 
 if (!(isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['janolaw_janolawservices']))) {

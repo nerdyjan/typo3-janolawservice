@@ -3,6 +3,7 @@
 namespace Janolaw\Janolawservice\Tests\Unit\Utility;
 
 use Janolaw\Janolawservice\Utility\JanolawConfigurationUtility;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\Client\GuzzleClientFactory;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -30,6 +31,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
     private string $debugMessage = '';
     private RequestFactory $requestFactory;
 
+    private JanolawConfigurationUtility $configUtil;
     protected function setUp(): void
     {
         parent::setUp();
@@ -39,19 +41,14 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
         $this->requestFactory = new RequestFactory($guzzleClient);
         $this->configUtil = new JanolawConfigurationUtility($requestFactory);
     }
-    /**
-     * @test
-     */
-    public function generatePdfContentTypo3TempExistsTest()
+
+    #[Test] public function generatePdfContentTypo3TempExistsTest()
     {
         $pdfPath = Environment::getPublicPath() . '/typo3temp/';
         self::assertDirectoryExists($pdfPath);
     }
 
-    /**
-     * @test
-     */
-    public function canConnectToJanolawServerTest()
+    #[Test] public function canConnectToJanolawServerTest()
     {
         $additionalOptions = [
             'allow_redirects' => true,
@@ -62,10 +59,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
         self::assertNotEquals('404', $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
-    public function canSendGetRequestToJanolawServerTest()
+    #[Test] public function canSendGetRequestToJanolawServerTest()
     {
         $docUrl = self::BASEURL . '/' . self::USERID_MULTILANGUAGE . '/' . self::SHOPID_MULTILANGUAGE
                   . '/' . self::LANG_DE . '/' . self::LEGAL_DETAILS . '_include.html';
@@ -77,10 +71,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
         self::assertEquals('200', $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
-    public function canGetContentUrlFromJanolawServerTest()
+    #[Test] public function canGetContentUrlFromJanolawServerTest()
     {
         $docUrl = self::BASEURL . '/' . self::USERID_MULTILANGUAGE . '/' . self::SHOPID_MULTILANGUAGE
                   . '/' . self::LANG_DE . '/' . self::LEGAL_DETAILS . '_include.html';
@@ -88,10 +79,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
         self::assertNotFalse($content);
     }
 
-    /**
-     * @test
-     */
-    public function canGetPdfFileFromJanolawServerTest()
+    #[Test] public function canGetPdfFileFromJanolawServerTest()
     {
         $pdfUrl = self::BASEURL . '/' . self::USERID_MULTILANGUAGE . '/' . self::SHOPID_MULTILANGUAGE
                   . '/' . self::LANG_DE . '/' . self::LEGAL_DETAILS . '.pdf';
@@ -99,10 +87,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
         self::assertNotFalse($content);
     }
 
-    /**
-     * @test
-     */
-    public function janolawHasValidUserData()
+    #[Test] public function janolawHasValidUserData()
     {
         //verify error-cases returns one
         $result = $this->configUtil->hasValidUserData(self::USERID_DE, self::SHOPID_DE);
@@ -113,40 +98,28 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
         self::assertFalse($result);
     }
 
-    /**
-     * @test
-     */
-    public function janolawGetVersionGetVersionWithEmptyValues()
+    #[Test] public function janolawGetVersionGetVersionWithEmptyValues()
     {
         //verify error-cases returns one
         $version = $this->configUtil->janolawGetVersion('', '', $this->debugMessage);
         self::assertEquals(1, $version);
     }
 
-    /**
-     * @test
-     */
-    public function janolawGetVersionGetVersionWithInvalidUserId()
+    #[Test] public function janolawGetVersionGetVersionWithInvalidUserId()
     {
         //verify error-cases returns one
         $version = $this->configUtil->janolawGetVersion(self::USERID_INVALID, self::SHOPID_DE, $this->debugMessage);
         self::assertEquals(1, $version);
     }
 
-    /**
-     * @test
-     */
-    public function janolawGetVersionGetVersionWithInvalidShopId()
+    #[Test] public function janolawGetVersionGetVersionWithInvalidShopId()
     {
         //verify error-cases returns one
         $version = $this->configUtil->janolawGetVersion(self::USERID_DE, self::SHOPID_INVALID, $this->debugMessage);
         self::assertEquals(1, $version);
     }
 
-    /**
-     * @test
-     */
-    public function janolawGetVersionGetVersionWithInvalidUserIdAndShopIdCombination(): void
+    #[Test] public function janolawGetVersionGetVersionWithInvalidUserIdAndShopIdCombination(): void
     {
         $version = $this->configUtil->janolawGetVersion(
             self::USERID_MULTILANGUAGE,
@@ -163,20 +136,14 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
         self::assertEquals(1, $version);
     }
 
-    /**
-     * @test
-     */
-    public function janolawGetVersionGetVersionWithValidDataForVersion3()
+    #[Test] public function janolawGetVersionGetVersionWithValidDataForVersion3()
     {
         //verify error-cases returns one
         $version = $this->configUtil->janolawGetVersion(self::USERID_DE, self::SHOPID_DE, $this->debugMessage);
         self::assertEquals(3, $version);
     }
 
-    /**
-     * @test
-     */
-    public function janolawGetVersionGetVersionWithValidDataForVersion3Multilanguage()
+    #[Test] public function janolawGetVersionGetVersionWithValidDataForVersion3Multilanguage()
     {
         //verify error-cases returns one
         $version = $this->configUtil->janolawGetVersion(
@@ -187,10 +154,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
         self::assertEquals('3m', $version);
     }
 
-    /**
-     * @test
-     */
-    public function janolawGetVersionGetVersionWithValidDataForVersion2()
+    #[Test] public function janolawGetVersionGetVersionWithValidDataForVersion2()
     {
         //verify error-cases returns one
         $version = $this->configUtil->janolawGetVersion(self::USERID_DE_V2, self::SHOPID_DE_V2, $this->debugMessage);

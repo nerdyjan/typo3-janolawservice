@@ -28,6 +28,9 @@ enthalten sind bzw. auch die AGB, Widerrufsbelehrung und das Muster-Widerrufsfor
 
 **Version Historie der TYPO3 Extension**
 
+4.0 Support von TYPO3 12 und TYPO3 13, nach einem Update muss der
+ Upgrade Wizard "Migrates janolawserive Plugin" durchgeführt werden, die Datenbankstruktur muss evtl. aktualisiert werden und die Caches müssen gelöscht werden!
+
 3.0 Support von TYPO3 11 und TYPO3 12, nach einem Update bitte die Caches aktualisieren!
 
 2.0 Support von TYPO3 10 und TYPO3 11, für Updates bitte die Datenbankstruktur aktualisieren!
@@ -43,6 +46,8 @@ enthalten sind bzw. auch die AGB, Widerrufsbelehrung und das Muster-Widerrufsfor
 Installieren Sie die Extension entweder über das Admintool Erweiterungen oder falls Sie composer nutzen mit
 
 composer require janolaw/janolawservice
+
+**Update:** Wenn Sie die vorhandene Extension von der Version 3.x auf die Version 4.x aktualisieren, dann führen Sie nach dem Update bitte den Upgrade Wizard durch (Admin Tools -> Upgrade -> Upgrade Wizard), dann eine Aktualisierung der Datenbankstruktur (unter Admin Tools -> Maintenance -> Analyse Database Structure).
 
 **Update:** Wenn Sie die vorhandene Extension von der Version 1.x auf die Version 2.x aktualisieren,
 dann führen Sie nach dem Update bitte eine Aktualisierung der Datenbankstruktur durch (unter

@@ -2,12 +2,13 @@
 
 namespace Janolaw\Janolawservice\Controller;
 
-use Exception;
 use Janolaw\Janolawservice\Domain\Model\JanolawService;
 use Janolaw\Janolawservice\Domain\Repository\JanolawServiceRepository;
 use Janolaw\Janolawservice\Utility\JanolawConfigurationUtility;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -92,22 +93,7 @@ class JanolawServiceController extends ActionController
         $shopid = 0
     ) {
         $debugMessage = '';
-        $lifetime = 12 * 3600;
-        try {
-            $_extConfig = $this->extensionConfiguration->get(
-                'janolawservice'
-            );
-            $lifetime = $_extConfig['lifetimeHours'] * 3600;
-            if (!isset($userid) || $userid <= 0) {
-                $userid = $_extConfig['user_id'];
-            }
-            if (!isset($shopid) || $shopid <= 0) {
-                $shopid = $_extConfig['shop_id'];
-            }
-        } catch (Exception $ex) {
-            //do nothing;
-            $debugMessage = '';
-        }
+        list($lifetime, $userid, $shopid) = $this->getExtConfigSettings($userid, $shopid);
 
         // create Cache Identifier
         $cacheIdentifier = md5(
@@ -206,7 +192,7 @@ class JanolawServiceController extends ActionController
         $janolawServiceModel = new JanolawService();
         $janolawServiceModel->setLegacyLanguage($language);
         $janolawServiceModel->setType($type);
-        $janolawServiceModel->setUserId($userid);
+        $janolawServiceModel->setUserId((int)$userid);
         $janolawServiceModel->setShopId($shopid);
         $janolawServiceModel->setPdf($pdf);
         try {
@@ -242,5 +228,30 @@ class JanolawServiceController extends ActionController
         }
 
         return $janolawServiceModel;
+    }
+
+    /**
+     * @param mixed $userid
+     * @param mixed $shopid
+     * @return array
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     */
+    protected function getExtConfigSettings(mixed $userid, mixed $shopid): array
+    {
+        $lifetime = 12 * 3600;
+        $_extConfig = $this->extensionConfiguration->get(
+            'janolawservice'
+        );
+        if (is_array($_extConfig)) {
+            $lifetime = $_extConfig['lifetimeHours'] * 3600;
+            if (!isset($userid) || $userid <= 0) {
+                $userid = $_extConfig['user_id'];
+            }
+            if (!isset($shopid) || $shopid <= 0) {
+                $shopid = $_extConfig['shop_id'];
+            }
+        }
+        return [$lifetime, $userid, $shopid];
     }
 }

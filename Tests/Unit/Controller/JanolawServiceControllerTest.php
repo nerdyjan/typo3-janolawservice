@@ -5,9 +5,11 @@ namespace Janolaw\Janolawservice\Tests\Unit\Controller;
 use Janolaw\Janolawservice\Controller\JanolawServiceController;
 use Janolaw\Janolawservice\Domain\Repository\JanolawServiceRepository;
 use Janolaw\Janolawservice\Utility\JanolawConfigurationUtility;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\RequestFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -52,20 +54,20 @@ class JanolawServiceControllerTest extends UnitTestCase
         $mockConfigurationManager->method('getConfiguration')->willReturn($configuration);
         $this->janolawServiceController->injectConfigurationManager($mockConfigurationManager);
     }
-    /**
-     * @test
-     */
-    public function testGenerateAction()
+    protected function tearDown(): void
+    {
+        GeneralUtility::purgeInstances();
+        parent::tearDown();
+    }
+
+    #[Test] public function testGenerateAction()
     {
         //not possible to test without writing to database
     }
 
-    /**
-     * @test
-     */
-    public function testGetJanolawContent()
+    #[Test] public function testGetJanolawContent()
     {
-/*        $this->resetSingletonInstances = true;
+        $this->resetSingletonInstances = true;
         $extensionConfiguration = $this->createMock(ExtensionConfiguration::class);
         GeneralUtility::addInstance(ExtensionConfiguration::class, $extensionConfiguration);
         $result = $this->janolawServiceController->getJanolawContent(
@@ -74,7 +76,7 @@ class JanolawServiceControllerTest extends UnitTestCase
             self::PDF,
             self::USERID_MULTILANGUAGE,
             self::SHOPID_MULTILANGUAGE
-        );*/
+        );
         self::assertNotFalse(true);
         // not possible to test without writing to database
     }

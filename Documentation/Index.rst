@@ -30,6 +30,8 @@ documents including the GTCs, cancellation policy and the model cancellation for
 
 **Version History of the TYPO3 Extension**
 
+4.0 Support of TYPO3 12 and TYPO3 13, after an update the upgrade wizard ‘Migrates janolawserive Plugin’ must be executed, the database structure may be updated and the caches must be deleted!
+
 3.0 Support of TYPO3 11 and TYPO3 12, after updates please refresh the caches!
 
 2.0 Support of TYPO3 10 and TYPO3 11, for updates please update the database structure!
@@ -45,6 +47,8 @@ documents including the GTCs, cancellation policy and the model cancellation for
 Please install the extension either via the admin tool „Extensions“, or if you use composer then with
 
 composer require janolaw/janolawservice
+
+**Update:** If you are updating the existing extension from version 3.x to version 4.x, please run the Upgrade Wizard after the update (Admin Tools -> Upgrade -> Upgrade Wizard), then update the database structure (under Admin Tools -> Maintenance -> Analyse Database Structure).
 
 **Update:** If you update the existing extension from version 1.x to version 2.x, please also update the database structure following the update of the extension (under Administration Tools -> Maintenance -> Analyse Database structure).
 
