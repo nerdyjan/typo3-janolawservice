@@ -9,19 +9,18 @@
                         <label>Sprache</label>
                         <config>
                             <type>select</type>
-                            <items type="array">
-                                <numIndex index="0" type="array">
-                                    <numIndex index="0">Deutsch</numIndex>
-                                    <numIndex index="1">de</numIndex>
+                            <items>
+                                <numIndex index="0">
+                                    <label>Deutsch</label>
+                                    <value>de</value>
                                 </numIndex>
-                                <numIndex index="1" type="array">
-                                    <numIndex index="0">Englisch (nur in Version 3)</numIndex>
-                                    <numIndex index="1">gb</numIndex>
+                                <numIndex index="1">
+                                    <label>Englisch (nur in Version 3)</label>
+                                    <value>gb</value>
                                 </numIndex>
-                                <numIndex index="2" type="array">
-                                    <numIndex index="0">Franzoesisch (nur in Version 3)
-                                    </numIndex>
-                                    <numIndex index="1">fr</numIndex>
+                                <numIndex index="2">
+                                    <label>Franzoesisch (nur in Version 3)</label>
+                                    <value>fr</value>
                                 </numIndex>
                             </items>
                             <renderType>selectSingle</renderType>
@@ -31,28 +30,26 @@
                         <label>Contenttyp</label>
                         <config>
                             <type>select</type>
-                            <items type="array">
-                                <numIndex index="0" type="array">
-                                    <numIndex index="0">AGB</numIndex>
-                                    <numIndex index="1">terms</numIndex>
+                            <items>
+                                <numIndex index="0">
+                                    <label>AGB</label>
+                                    <value>terms</value>
                                 </numIndex>
-                                <numIndex index="1" type="array">
-                                    <numIndex index="0">Impressum</numIndex>
-                                    <numIndex index="1">legaldetails</numIndex>
+                                <numIndex index="1">
+                                    <label>Impressum</label>
+                                    <value>legaldetails</value>
                                 </numIndex>
-                                <numIndex index="2" type="array">
-                                    <numIndex index="0">Widerrufsbelehrung</numIndex>
-                                    <numIndex index="1">revocation</numIndex>
+                                <numIndex index="2">
+                                    <label>Widerrufsbelehrung</label>
+                                    <value>revocation</value>
                                 </numIndex>
-                                <numIndex index="3" type="array">
-                                    <numIndex index="0">Datenschutzerklärung</numIndex>
-                                    <numIndex index="1">datasecurity</numIndex>
+                                <numIndex index="3">
+                                    <label>Datenschutzerklärung</label>
+                                    <value>datasecurity</value>
                                 </numIndex>
-                                <numIndex index="4" type="array">
-                                    <numIndex index="0">Muster-Widerrufsformular (nur in Version
-                                        3)
-                                    </numIndex>
-                                    <numIndex index="1">model-withdrawal-form</numIndex>
+                                <numIndex index="4">
+                                    <label>Muster-Widerrufsformular (nur in Version 3)</label>
+                                    <value>model-withdrawal-form</value>
                                 </numIndex>
                             </items>
                             <renderType>selectSingle</renderType>
@@ -62,22 +59,22 @@
                         <label>PDF Link (nur in Version 3)</label>
                         <config>
                             <type>select</type>
-                            <items type="array">
-                                <numIndex index="0" type="array">
-                                    <numIndex index="0">kein PDF</numIndex>
-                                    <numIndex index="1">no_pdf</numIndex>
+                            <items>
+                                <numIndex index="0">
+                                    <label>kein PDF</label>
+                                    <value>no_pdf</value>
                                 </numIndex>
-                                <numIndex index="1" type="array">
-                                    <numIndex index="0">PDF oben</numIndex>
-                                    <numIndex index="1">pdf_top</numIndex>
+                                <numIndex index="1">
+                                    <label>PDF oben</label>
+                                    <value>pdf_top</value>
                                 </numIndex>
-                                <numIndex index="2" type="array">
-                                    <numIndex index="0">PDF unten</numIndex>
-                                    <numIndex index="1">pdf_bottom</numIndex>
+                                <numIndex index="2">
+                                    <label>PDF unten</label>
+                                    <value>pdf_bottom</value>
                                 </numIndex>
-                                <numIndex index="3" type="array">
-                                    <numIndex index="0">nur PDF Link</numIndex>
-                                    <numIndex index="1">only_pdf_link</numIndex>
+                                <numIndex index="3">
+                                    <label>nur PDF Link</label>
+                                    <value>only_pdf_link</value>
                                 </numIndex>
                             </items>
                             <renderType>selectSingle</renderType>

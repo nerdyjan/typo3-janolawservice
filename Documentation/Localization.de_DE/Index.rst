@@ -28,6 +28,9 @@ enthalten sind bzw. auch die AGB, Widerrufsbelehrung und das Muster-Widerrufsfor
 
 **Version Historie der TYPO3 Extension**
 
+5.0 Support von TYPO3 13.4 LTS und TYPO3 14 (PHP 8.2+), nach einem Update muss die
+Datenbankstruktur aktualisiert und der Cache geleert werden!
+
 4.0 Support von TYPO3 12 und TYPO3 13, nach einem Update muss der
  Upgrade Wizard "Migrates janolawserive Plugin" durchgeführt werden, die Datenbankstruktur muss evtl. aktualisiert werden und die Caches müssen gelöscht werden!
 

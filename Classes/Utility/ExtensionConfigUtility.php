@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Janolaw\Janolawservice\Utility;
 
+use TYPO3\CMS\Core\Attribute\AsAllowedCallable;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -15,6 +18,7 @@ class ExtensionConfigUtility
      * contructor Injection is not working with type=user in ext_conf_template
      * because of this problem we Us GeneralUtility twice
      */
+    #[AsAllowedCallable]
     public function checkUserData(): string
     {
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);

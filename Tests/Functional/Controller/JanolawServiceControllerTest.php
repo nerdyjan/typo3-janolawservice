@@ -1,8 +1,8 @@
 <?php
 
-namespace Functional\Controller;
+namespace Janolaw\Janolawservice\Tests\Functional\Controller;
 
-use Doctrine\DBAL\DBALException;
+use PHPUnit\Framework\Attributes\Test;
 use Janolaw\Janolawservice\Controller\JanolawServiceController;
 use Janolaw\Janolawservice\Domain\Repository\JanolawServiceRepository;
 use Janolaw\Janolawservice\Utility\JanolawConfigurationUtility;
@@ -29,8 +29,6 @@ class JanolawServiceControllerTest extends FunctionalTestCase
 
     /**
      * Sets up this test case.
-     *
-     * @throws DBALException
      */
     protected function setUp(): void
     {
@@ -51,9 +49,7 @@ class JanolawServiceControllerTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getJanolawContentEmptyValuesTest()
     {
         $extConfig = new ExtensionConfiguration();
@@ -71,9 +67,7 @@ class JanolawServiceControllerTest extends FunctionalTestCase
 
         self::assertEmpty($result);
     }
-    /**
-     * @test
-     */
+    #[Test]
     public function getJanolawContentMultilanguageTestFileSystem()
     {
         $result = $this->janolawServiceController->getJanolawContent(
@@ -90,9 +84,7 @@ class JanolawServiceControllerTest extends FunctionalTestCase
         self::directoryExists();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getJanolawContentMultilanguageTestIfTablesExistsAndIsEmpty()
     {
         $result = $this->getAllRecords('tx_janolawservice_domain_model_janolawservice');
@@ -100,9 +92,7 @@ class JanolawServiceControllerTest extends FunctionalTestCase
         self::assertEmpty($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function importCSVinJanolawserviceDatabaseTable()
     {
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/janolawservice.csv');
@@ -111,9 +101,7 @@ class JanolawServiceControllerTest extends FunctionalTestCase
         $result = $this->getAllRecords('tx_janolawservice_domain_model_janolawservice');
         $this->assertCSVDataSet(__DIR__ . '/../Fixtures/janolawservice.csv');
     }
-    /**
-     * @test
-     */
+    #[Test]
     public function getJanolawContentMultilanguageTestDatabase()
     {
         $content = $this->janolawServiceController->getJanolawContent(

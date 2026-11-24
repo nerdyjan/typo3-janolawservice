@@ -2,6 +2,7 @@
 
 namespace Janolaw\Janolawservice\Tests\Unit\Domain\Model;
 
+use PHPUnit\Framework\Attributes\Test;
 use Janolaw\Janolawservice\Domain\Model\JanolawService;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -10,25 +11,21 @@ class JanolawServiceTest extends UnitTestCase
     /** @var JanolawService */
     protected JanolawService $subject;
 
-    public function setup(): void
+    protected function setUp(): void
     {
-        parent::setup();
-        $this->subject = new JanolawService('legal', 123, 123, 'de', 'pdf_top');
+        parent::setUp();
+        $this->subject = new JanolawService();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function userIdCanBeSet()
     {
-        $value = '123';
+        $value = 123;
         $this->subject->setUserId($value);
         self::assertEquals($value, $this->subject->getUserId());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function pdfCanBeSet()
     {
         $value = 'pdf_top';
@@ -36,9 +33,7 @@ class JanolawServiceTest extends UnitTestCase
         self::assertEquals($value, $this->subject->getPdf());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function externalCanBeSet()
     {
         $value = 'external';
@@ -46,9 +41,7 @@ class JanolawServiceTest extends UnitTestCase
         self::assertEquals($value, $this->subject->getExternal());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function typeCanBeSet()
     {
         $value = 'legal';
@@ -56,9 +49,7 @@ class JanolawServiceTest extends UnitTestCase
         self::assertEquals($value, $this->subject->getType());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function languageCanBeSet()
     {
         $value = 'de';
@@ -66,12 +57,10 @@ class JanolawServiceTest extends UnitTestCase
         self::assertEquals($value, $this->subject->getLegacyLanguage());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function shopIdCanBeSet()
     {
-        $value = '123';
+        $value = 123;
         $this->subject->setShopId($value);
         self::assertEquals($value, $this->subject->getShopId());
     }

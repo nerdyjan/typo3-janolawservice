@@ -17,14 +17,11 @@ $EM_CONF[$_EXTKEY] = [
     'author' => 'janolaw AG',
     'author_email' => 'info@janolaw.de',
     'state' => 'stable',
-    'internal' => '',
-    'uploadfolder' => '0',
-    'createDirs' => '',
-    'clearCacheOnLoad' => 0,
-    'version' => '4.0.0',
+    'version' => '5.0.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '12.4.2-13.9.99',
+            'php' => '8.2.0-8.5.99',
+            'typo3' => '13.4.0-14.4.99',
         ],
         'conflicts' => [],
         'suggests' => [],
