@@ -15,6 +15,7 @@ namespace Janolaw\Janolawservice\Tests\Functional\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
+use PHPUnit\Framework\Attributes\Test;
 use Janolaw\Janolawservice\Utility\JanolawConfigurationUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -30,9 +31,7 @@ class JanolawConfigurationUtilityTest extends FunctionalTestCase
         'typo3conf/ext/janolawservice',
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hasValidUserDataForExtConfigVersion()
     {
         $configUtil = new JanolawConfigurationUtility(GeneralUtility::makeInstance(RequestFactory::class));

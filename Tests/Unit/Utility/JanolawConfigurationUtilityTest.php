@@ -160,10 +160,8 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
         $version = $this->configUtil->janolawGetVersion(self::USERID_DE_V2, self::SHOPID_DE_V2, $this->debugMessage);
         self::assertEquals(2, $version);
     }
-    /**
-     * not working at the moment because of getURL calling requestfactory with makeInstance
-     */
-    public function janolawGetContentGeneratePdfContentTest()
+    
+    #[Test] public function janolawGetContentGeneratePdfContentTest()
     {
         $content = $this->configUtil->janolawGetContent(
             '3m',
@@ -198,7 +196,7 @@ class JanolawConfigurationUtilityTest extends UnitTestCase
         );
         self::assertNotFalse($content);
         $pdfPath = Environment::getPublicPath() . '/typo3temp/janolaw/' . self::SHOPID_MULTILANGUAGE;
-        self::directoryExists();
+        self::assertDirectoryExists($pdfPath);
         $pdfFile = $pdfPath . '/' . self::LANG_DE . '_' . self::LEGAL_DETAILS . '.pdf';
         self::assertFileExists($pdfFile);
         $this->testFilesToDelete[] = $pdfFile;
