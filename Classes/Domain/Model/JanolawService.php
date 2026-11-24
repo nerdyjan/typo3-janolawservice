@@ -1,171 +1,79 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Janolaw\Janolawservice\Domain\Model;
 
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * JanolawService
+ * Cached janolaw document (fallback if the janolaw server is not reachable)
  */
 class JanolawService extends AbstractEntity
 {
-    /**
-     * type
-     *
-     * @var string
-     * @TYPO3\CMS\Extbase\Annotation\Validate(validator="NotEmpty")
-     */
-    protected $type = '';
+    protected string $type = '';
+    protected ?int $shopid = null;
+    protected ?int $userid = null;
+    protected string $external = '';
+    protected string $legacyLanguage = '';
+    protected string $pdf = '';
 
-    /**
-     * shopid
-     *
-     * @var int
-     * @TYPO3\CMS\Extbase\Annotation\Validate(validator="NotEmpty")
-     */
-    protected $shopid;
-
-    /**
-     * userid
-     *
-     * @var int
-     * @TYPO3\CMS\Extbase\Annotation\Validate(validator="NotEmpty")
-     */
-    protected $userid;
-
-    /**
-     * external
-     *
-     * @var string
-     */
-    protected $external = '';
-
-    /**
-     * legacyLanguage
-     *
-     * @var string
-     */
-    protected $legacyLanguage = '';
-
-    /**
-     * pdf
-     *
-     * @var string
-     */
-    protected $pdf = '';
-
-    /**
-     * @return string
-     */
     public function getExternal(): string
     {
         return $this->external;
     }
 
-    /**
-     * @param string $external
-     */
     public function setExternal(string $external): void
     {
         $this->external = $external;
     }
 
-    /**
-     * Returns the type
-     *
-     * @return string type
-     */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * Sets the type
-     *
-     * @param string $type
-     */
-    public function setType(string $type)
+    public function setType(string $type): void
     {
         $this->type = $type;
     }
 
-    /**
-     * Returns the userid
-     *
-     * @return int userid
-     */
     public function getUserId(): ?int
     {
         return $this->userid;
     }
 
-    /**
-     * Sets the userid
-     *
-     * @param int $userid
-     */
-    public function setUserId(int $userid)
+    public function setUserId(int $userid): void
     {
         $this->userid = $userid;
     }
 
-    /**
-     * Returns the shopid
-     *
-     * @return int shopid
-     */
     public function getShopId(): ?int
     {
         return $this->shopid;
     }
 
-    /**
-     * Sets the shopid
-     *
-     * @param int $shopid
-     */
-    public function setShopId($shopid)
+    public function setShopId(int $shopid): void
     {
         $this->shopid = $shopid;
     }
 
-    /**
-     * Returns the legacyLanguage
-     *
-     * @return string $legacyLanguage
-     */
     public function getLegacyLanguage(): string
     {
         return $this->legacyLanguage;
     }
 
-    /**
-     * Sets the legacyLanguage
-     *
-     * @param string $legacyLanguage
-     */
-    public function setLegacyLanguage(string $legacyLanguage)
+    public function setLegacyLanguage(string $legacyLanguage): void
     {
         $this->legacyLanguage = $legacyLanguage;
     }
 
-    /**
-     * Returns the pdf
-     *
-     * @return string $pdf
-     */
     public function getPdf(): string
     {
         return $this->pdf;
     }
 
-    /**
-     * Sets the legacyLanguage
-     *
-     * @param string $pdf
-     */
-    public function setPdf(string $pdf)
+    public function setPdf(string $pdf): void
     {
         $this->pdf = $pdf;
     }

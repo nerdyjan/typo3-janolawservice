@@ -6,10 +6,9 @@ return [
         'label' => 'type',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'dividers2tabs' => true,
         'versioningWS' => true,
-
         'languageField' => 'sys_language_uid',
+        'transOrigPointerField' => 'l10n_parent',
         'transOrigDiffSourceField' => 'l10n_diffsource',
         'delete' => 'deleted',
         'enablecolumns' => [
@@ -17,43 +16,33 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'type,userid, shopid,external,legacy_language,pdf',
-        'iconfile' => 'EXT:janolawservice/Resources/Public/Icons/tx_janolawservice_domain_model_janolawservice.gif',
+        'iconfile' => 'EXT:janolawservice/Resources/Public/Icons/Extension.svg',
     ],
     'types' => [
-        '1' => ['showitem' => 'sys_language_uid,l10n_parent,l10n_diffsource,hidden,--palette--;;1,type,userid,shopid,external,legacy_language, pdf,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime,endtime'],
-    ],
-    'palettes' => [
-        '1' => ['showitem' => ''],
+        '1' => [
+            'showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, type, userid, shopid, external, legacy_language, pdf, --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access, starttime, endtime',
+        ],
     ],
     'columns' => [
         'sys_language_uid' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
+            'exclude' => true,
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'language',
-                'renderType' => 'selectSingle',
-                'foreign_table' => 'sys_language',
-                'foreign_table_where' => 'ORDER BY sys_language.title',
-                'items' => [
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages', -1],
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0],
-                ],
             ],
         ],
         'l10n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    'label' => '',
-                    'value' => 0,
+                    ['label' => '', 'value' => 0],
                 ],
                 'foreign_table' => 'tx_janolawservice_domain_model_janolawservice',
-                'foreign_table_where' => 'AND tx_janolawservice_domain_model_janolawservice.pid=###CURRENT_PID### AND tx_janolawservice_domain_model_janolawservice.sys_language_uid IN (-1,0)',
+                'foreign_table_where' => 'AND {#tx_janolawservice_domain_model_janolawservice}.{#pid}=###CURRENT_PID### AND {#tx_janolawservice_domain_model_janolawservice}.{#sys_language_uid} IN (-1,0)',
+                'default' => 0,
             ],
         ],
         'l10n_diffsource' => [
@@ -61,35 +50,22 @@ return [
                 'type' => 'passthrough',
             ],
         ],
-
-        't3ver_label' => [
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.versionLabel',
-            'config' => [
-                'type' => 'input',
-                'size' => 30,
-                'max' => 255,
-            ],
-        ],
-
         'hidden' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
+            'exclude' => true,
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
+                'renderType' => 'checkboxToggle',
             ],
         ],
         'starttime' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
+            'exclude' => true,
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => [
-                'renderType' => 'datetime',
-                'type' => 'input',
-                'size' => 13,
-                'eval' => 'datetime',
-                'checkbox' => 0,
+                'type' => 'datetime',
                 'default' => 0,
                 'range' => [
-                    'lower' => mktime(0, 0, 0, date('m'), date('d'), date('Y')),
+                    'lower' => mktime(0, 0, 0, (int)date('m'), (int)date('d'), (int)date('Y')),
                 ],
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
@@ -97,26 +73,20 @@ return [
             ],
         ],
         'endtime' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
+            'exclude' => true,
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => [
-                'renderType' => 'datetime',
-                'type' => 'input',
-                'size' => 13,
-                'eval' => 'datetime',
-                'checkbox' => 0,
+                'type' => 'datetime',
                 'default' => 0,
                 'range' => [
-                    'lower' => mktime(0, 0, 0, date('m'), date('d'), date('Y')),
+                    'lower' => mktime(0, 0, 0, (int)date('m'), (int)date('d'), (int)date('Y')),
                 ],
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
                 ],
             ],
         ],
-
         'type' => [
-            'exclude' => 0,
             'label' => 'LLL:EXT:janolawservice/Resources/Private/Language/locallang_db.xlf:tx_janolawservice_domain_model_janolawservice.type',
             'config' => [
                 'type' => 'input',
@@ -126,23 +96,19 @@ return [
             ],
         ],
         'userid' => [
-            'exclude' => 0,
             'label' => 'LLL:EXT:janolawservice/Resources/Private/Language/locallang_db.xlf:tx_janolawservice_domain_model_janolawservice.userid',
             'config' => [
-                'type' => 'input',
-                'size' => 4,
+                'type' => 'number',
+                'size' => 10,
                 'required' => true,
-                'eval' => 'number',
             ],
         ],
         'shopid' => [
-            'exclude' => 0,
             'label' => 'LLL:EXT:janolawservice/Resources/Private/Language/locallang_db.xlf:tx_janolawservice_domain_model_janolawservice.shopid',
             'config' => [
-                'type' => 'input',
-                'size' => 4,
+                'type' => 'number',
+                'size' => 10,
                 'required' => true,
-                'eval' => 'number',
             ],
         ],
         'external' => [
@@ -153,7 +119,6 @@ return [
             ],
         ],
         'legacy_language' => [
-            'exclude' => 0,
             'label' => 'LLL:EXT:janolawservice/Resources/Private/Language/locallang_db.xlf:tx_janolawservice_domain_model_janolawservice.legacy_language',
             'config' => [
                 'type' => 'input',
@@ -162,7 +127,6 @@ return [
             ],
         ],
         'pdf' => [
-            'exclude' => 0,
             'label' => 'LLL:EXT:janolawservice/Resources/Private/Language/locallang_db.xlf:tx_janolawservice_domain_model_janolawservice.pdf',
             'config' => [
                 'type' => 'input',

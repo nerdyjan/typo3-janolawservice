@@ -1,18 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Janolaw\Janolawservice\Controller;
 
 use Janolaw\Janolawservice\Domain\Model\JanolawService;
 use Janolaw\Janolawservice\Domain\Repository\JanolawServiceRepository;
 use Janolaw\Janolawservice\Utility\JanolawConfigurationUtility;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
@@ -22,54 +26,30 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 /**
  * JanolawServiceController
  */
-class JanolawServiceController extends ActionController
+class JanolawServiceController extends ActionController implements LoggerAwareInterface
 {
-    /**
-     * janolawServiceRepository
-     * ^^
-     *
-     * @var JanolawServiceRepository
-     */
-    protected JanolawServiceRepository $janolawServiceRepository;
-    /**
-     * @var FrontendInterface
-     */
-    private FrontendInterface $cache;
-
-    /**
-     * @var PersistenceManager
-     */
-    private PersistenceManager $persistenceManager;
-    private JanolawConfigurationUtility $configUtily;
-    private RequestFactory $requestFactory;
-    private ExtensionConfiguration $extensionConfiguration;
+    use LoggerAwareTrait;
 
     public function __construct(
-        FrontendInterface $cache,
-        PersistenceManager $persistenceManager,
-        JanolawConfigurationUtility $configUtily,
-        RequestFactory $requestFactory,
-        JanolawServiceRepository $janolawServiceRepository,
-        ExtensionConfiguration $extensionConfiguration
-    ) {
-        $this->configUtily = $configUtily;
-        $this->cache = $cache;
-        $this->persistenceManager = $persistenceManager;
-        $this->requestFactory = $requestFactory;
-        $this->janolawServiceRepository = $janolawServiceRepository;
-        $this->extensionConfiguration = $extensionConfiguration;
-    }
+        private readonly FrontendInterface $cache,
+        private readonly PersistenceManager $persistenceManager,
+        private readonly JanolawConfigurationUtility $configUtily,
+        private readonly RequestFactory $requestFactory,
+        private readonly JanolawServiceRepository $janolawServiceRepository,
+        private readonly ExtensionConfiguration $extensionConfiguration
+    ) {}
 
     /**
      * action generate
      */
     public function generateAction(): ResponseInterface
     {
-        $language = $this->settings['janolawservice']['language'];
-        $type = $this->settings['janolawservice']['type'];
-        $pdflink = $this->settings['janolawservice']['pdflink'];
-        $userid = $this->settings['janolawservice']['userid'];
-        $shopid = $this->settings['janolawservice']['shopid'];
+        $settings = $this->settings['janolawservice'] ?? [];
+        $language = (string)($settings['language'] ?? 'de');
+        $type = (string)($settings['type'] ?? '');
+        $pdflink = (string)($settings['pdflink'] ?? 'no_pdf');
+        $userid = $settings['userid'] ?? 0;
+        $shopid = $settings['shopid'] ?? 0;
         $janolawContent = $this->getJanolawContent(
             $type,
             $language,
@@ -134,11 +114,11 @@ class JanolawServiceController extends ActionController
                     $debugMessage,
                     $pdf
                 );
-                if ($content) {
+                if (is_string($content) && $content !== '') {
                     $this->cache->set(
                         $cacheIdentifier,
                         $content,
-                        [ $language, $type, $userid, $shopid, $pdf ],
+                        $this->getCacheTags($language, $type, $userid, $shopid, $pdf),
                         $lifetime
                     );
                     //set new content to database, fallback if connection to external janolaw server fails
@@ -156,7 +136,7 @@ class JanolawServiceController extends ActionController
                     $this->cache->set(
                         $cacheIdentifier,
                         $content,
-                        [ $language, $type, $userid, $shopid, $pdf ],
+                        $this->getCacheTags($language, $type, $userid, $shopid, $pdf),
                         $lifetime
                     );
                 }
@@ -193,7 +173,7 @@ class JanolawServiceController extends ActionController
         $janolawServiceModel->setLegacyLanguage($language);
         $janolawServiceModel->setType($type);
         $janolawServiceModel->setUserId((int)$userid);
-        $janolawServiceModel->setShopId($shopid);
+        $janolawServiceModel->setShopId((int)$shopid);
         $janolawServiceModel->setPdf($pdf);
         try {
             $this->janolawServiceRepository->add($janolawServiceModel);
@@ -203,7 +183,7 @@ class JanolawServiceController extends ActionController
                 'userID' => $userid,
                 'shopID' => $shopid,
                 'plugin' => 'TYPO3',
-                'domain' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'),
+                'domain' => $this->getRequestUrl(),
                 'pluginversion' => ExtensionManagementUtility::getExtensionVersion(
                     'janolawservice'
                 ),
@@ -212,7 +192,7 @@ class JanolawServiceController extends ActionController
                               . $type . '<br/><b>PDF:</b> ' . $pdf,
                 'misc' => '',
             ];
-            $jsonDataEncoded = json_encode($jsonData);
+            $jsonDataEncoded = (string)json_encode($jsonData);
             $additionalOptions = [
                 'body' => $jsonDataEncoded,
                 // OR form data:
@@ -222,9 +202,21 @@ class JanolawServiceController extends ActionController
                 ],
             ];
 
-            $this->requestFactory->request($url, 'POST', $additionalOptions);
-        } catch (IllegalObjectTypeException $e) {
-            $error = true;
+            try {
+                $this->requestFactory->request($url, 'POST', $additionalOptions);
+            } catch (\Throwable $e) {
+                // registration at janolaw is informational only, rendering must not fail because of it
+                $this->logger?->warning(
+                    'janolaw plugin registration for user {userid} / shop {shopid} failed: {error}',
+                    [
+                        'userid' => $userid,
+                        'shopid' => $shopid,
+                        'error' => $e->getMessage(),
+                        'url' => $url,
+                    ]
+                );
+            }
+        } catch (IllegalObjectTypeException) {
         }
 
         return $janolawServiceModel;
@@ -244,14 +236,34 @@ class JanolawServiceController extends ActionController
             'janolawservice'
         );
         if (is_array($_extConfig)) {
-            $lifetime = $_extConfig['lifetimeHours'] * 3600;
-            if (!isset($userid) || $userid <= 0) {
-                $userid = $_extConfig['user_id'];
+            $lifetime = (int)($_extConfig['lifetimeHours'] ?? 12) * 3600;
+            if (!isset($userid) || (int)$userid <= 0) {
+                $userid = $_extConfig['user_id'] ?? 0;
             }
-            if (!isset($shopid) || $shopid <= 0) {
-                $shopid = $_extConfig['shop_id'];
+            if (!isset($shopid) || (int)$shopid <= 0) {
+                $shopid = $_extConfig['shop_id'] ?? 0;
             }
         }
         return [$lifetime, $userid, $shopid];
+    }
+
+    /**
+     * Cache tags must only contain [a-zA-Z0-9_%\-&]
+     */
+    private function getCacheTags(string $language, string $type, mixed $userid, mixed $shopid, string $pdf): array
+    {
+        return array_map(
+            static fn(mixed $tag): string => preg_replace('/[^a-zA-Z0-9_%\-&]/', '_', (string)$tag),
+            [$language, $type, $userid, $shopid, $pdf]
+        );
+    }
+
+    private function getRequestUrl(): string
+    {
+        if (!isset($this->request)) {
+            return '';
+        }
+        $normalizedParams = $this->request->getAttribute('normalizedParams');
+        return $normalizedParams instanceof NormalizedParams ? $normalizedParams->getRequestUrl() : '';
     }
 }
