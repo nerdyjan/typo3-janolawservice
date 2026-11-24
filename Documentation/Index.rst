@@ -30,6 +30,8 @@ documents including the GTCs, cancellation policy and the model cancellation for
 
 **Version History of the TYPO3 Extension**
 
+5.0 Support of TYPO3 13.4 LTS and TYPO3 14 (PHP 8.2+), after an update the database structure must be updated and the caches must be deleted!
+
 4.0 Support of TYPO3 12 and TYPO3 13, after an update the upgrade wizard ‘Migrates janolawserive Plugin’ must be executed, the database structure may be updated and the caches must be deleted!
 
 3.0 Support of TYPO3 11 and TYPO3 12, after updates please refresh the caches!
