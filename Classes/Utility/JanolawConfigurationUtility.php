@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Janolaw\Janolawservice\Utility;
 
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
@@ -14,13 +16,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class JanolawConfigurationUtility
 {
-    private RequestFactory $requestFactory;
-
     public function __construct(
-        RequestFactory $requestFactory
-    ) {
-        $this->requestFactory = $requestFactory;
-    }
+        private readonly RequestFactory $requestFactory
+    ) {}
 
     /**
      * Checks the backend configuration and shows a message if necessary.
@@ -38,8 +36,8 @@ class JanolawConfigurationUtility
             'janolawservice'
         );
 
-        $userid = $_extConfig['user_id'];
-        $shopid = $_extConfig['shop_id'];
+        $userid = $_extConfig['user_id'] ?? '';
+        $shopid = $_extConfig['shop_id'] ?? '';
 
         if ($this->hasValidUserData($userid, $shopid)) {
             $result = 'Ihre Daten sind o.k., der Janolaw Server ist erreichbar.<br/>';
@@ -149,7 +147,7 @@ class JanolawConfigurationUtility
                 }
                 $docUrl = $base_url . $this->getVersion1Filename($type) . '_include.html';
                 $debugMessage .= 'Version: ' . $version . ' Link: ' . $docUrl . '  ';
-                $content = GeneralUtility::getURL($docUrl);
+                $content = $this->fetchUrl($docUrl);
                 break;
             case 2:
                 if ($language !== 'de') {
@@ -160,14 +158,14 @@ class JanolawConfigurationUtility
                 }
                 $docUrl = $base_url . $language . '/' . $type . '_include.html';
                 $debugMessage .= 'Version: ' . $version . ' Link: ' . $docUrl . '  ';
-                $content = GeneralUtility::getURL($docUrl);
+                $content = $this->fetchUrl($docUrl);
                 break;
             case 3:
             case '3m':
                 $docUrl = $base_url . $language . '/' . $type . '_include.html';
                 $pdfUrl = $base_url . $language . '/' . $type . '.pdf';
                 $debugMessage .= 'Version: ' . $version . ' Link: ' . $docUrl . '  ';
-                $content = GeneralUtility::getURL($docUrl);
+                $content = $this->fetchUrl($docUrl);
                 $this->generatePdfContent($pdfUrl, $content, $language, $type, $shopid, $pdf);
                 break;
         }
@@ -177,7 +175,10 @@ class JanolawConfigurationUtility
     private function generatePdfContent($pdfUrl, &$content, $language, $type, $shopid, $pdf)
     {
         //PDF File download, needed in every call, may be used in caching is managed before
-        $pdfContent = GeneralUtility::getURL($pdfUrl);
+        $pdfContent = $this->fetchUrl($pdfUrl);
+        if ($pdfContent === false) {
+            return;
+        }
         $pdfName = $language . '_' . $type . '.pdf';
         $pdfPath = '/typo3temp/janolaw/' . $shopid;
         if (!is_dir(Environment::getPublicPath() . $pdfPath)) {
@@ -200,6 +201,24 @@ class JanolawConfigurationUtility
                 $content = $pdflink;
             }
         }
+    }
+
+    /**
+     * Replacement for GeneralUtility::getURL(), which has been removed in TYPO3 v14
+     *
+     * @return string|false body of the response, false on error
+     */
+    private function fetchUrl(string $url): string|false
+    {
+        try {
+            $response = $this->requestFactory->request($url, 'GET', ['allow_redirects' => true, 'http_errors' => false]);
+        } catch (\Throwable) {
+            return false;
+        }
+        if ($response->getStatusCode() >= 400) {
+            return false;
+        }
+        return $response->getBody()->getContents();
     }
 
     private function getVersion1Filename($type): string
